@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaDocument;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaVideo;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -30,7 +31,15 @@ class Controller {
                 SendMediaGroup send = new SendMediaGroup();
 
                 send.setChatId(chatId);
-                send.setMedias(fileIds.stream().map(fileId -> (InputMedia) new InputMediaDocument(fileId)).toList());
+                send.setMedias(fileIds.stream().map(fileString -> {
+                    String fileId = fileString.substring(fileString.indexOf(':') + 1);
+
+                    return switch (fileString.substring(0, fileId.indexOf(':'))) {
+                        case "photo" -> new InputMediaPhoto(fileId);
+                        case "video" -> new InputMediaVideo(fileId);
+                        default -> null;
+                    };
+                }).toList());
                 if (post.hasText()) {
                     send.getMedias().get(0).setCaption(post.getText());
                 }

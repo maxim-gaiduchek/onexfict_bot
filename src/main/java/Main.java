@@ -112,11 +112,15 @@ public class Main extends TelegramLongPollingBot {
         BotUser user = service.getUser(message.getChatId());
 
         if (user.getStatus() == BotUser.Status.IS_ADDING_PHOTO) {
+            String fileId = null;
+
             if (message.hasPhoto()) {
-                PostsCreator.addPhoto(sender, user, message.getPhoto().get(0).getFileId());
+                fileId = "photo:" + message.getPhoto().get(0).getFileId();
             } else if (message.hasVideo()) {
-                PostsCreator.addPhoto(sender, user, message.getVideo().getFileId());
+                fileId = "video:" + message.getVideo().getFileId();
             }
+
+            PostsCreator.addPhoto(sender, user, fileId);
             service.savePost(user.getPost());
             service.saveUser(user);
         }
