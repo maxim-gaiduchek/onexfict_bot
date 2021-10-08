@@ -3,6 +3,7 @@ package controllers;
 import entities.Post;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -46,15 +47,26 @@ class Controller {
 
                 message = sender.execute(send).get(0);
             } else {
-                SendPhoto send = new SendPhoto();
+                String fileId = fileIds.get(0);
+                InputFile file = new InputFile(fileId.substring(fileId.indexOf(':') + 1));
 
-                send.setChatId(chatId);
-                send.setPhoto(new InputFile(fileIds.get(0)));
-                if (post.hasText()) {
-                    send.setCaption(post.getText());
+                if (fileId.startsWith("photo:")) {
+                    SendPhoto send = new SendPhoto();
+
+                    send.setChatId(chatId);
+                    send.setPhoto(file);
+                    if (post.hasText()) send.setCaption(post.getText());
+
+                    message = sender.execute(send);
+                } else { // video
+                    SendVideo send = new SendVideo();
+
+                    send.setChatId(chatId);
+                    send.setVideo(file);
+                    if (post.hasText()) send.setCaption(post.getText());
+
+                    message = sender.execute(send);
                 }
-
-                message = sender.execute(send);
             }
 
             editInlineKeyboard(post, sender, chatId, text, query, message.getMessageId());
