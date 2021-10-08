@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageRe
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaDocument;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -29,7 +30,7 @@ class Controller {
                 SendMediaGroup send = new SendMediaGroup();
 
                 send.setChatId(chatId);
-                send.setMedias(fileIds.stream().map(fileId -> (InputMedia) new InputMediaPhoto(fileId)).toList());
+                send.setMedias(fileIds.stream().map(fileId -> (InputMedia) new InputMediaDocument(fileId)).toList());
                 if (post.hasText()) {
                     send.getMedias().get(0).setCaption(post.getText());
                 }
