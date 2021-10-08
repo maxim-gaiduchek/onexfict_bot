@@ -53,8 +53,8 @@ public class Main extends TelegramLongPollingBot {
     private void parseMessage(Message message) {
         if (message.isCommand()) {
             parseCommand(message);
-        } else if (message.hasPhoto()) {
-            parsePhoto(message);
+        } else if (message.hasPhoto() || message.hasVideo()) {
+            parseMedia(message);
         } else if (message.hasText()) {
             parseTextMessage(message);
         } else {
@@ -106,9 +106,9 @@ public class Main extends TelegramLongPollingBot {
         sender.sendString(chatId, msg);
     }
 
-    // photo parsing
+    // photo media
 
-    private void parsePhoto(Message message) {
+    private void parseMedia(Message message) {
         BotUser user = service.getUser(message.getChatId());
 
         if (user.getStatus() == BotUser.Status.IS_ADDING_PHOTO) {
