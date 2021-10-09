@@ -51,14 +51,16 @@ public class Main extends TelegramLongPollingBot {
     // message parsing
 
     private void parseMessage(Message message) {
-        if (message.isCommand()) {
-            parseCommand(message);
-        } else if (message.hasPhoto() || message.hasVideo()) {
-            parseMedia(message);
-        } else if (message.hasText()) {
-            parseTextMessage(message);
-        } else {
-            sender.deleteMessage(message.getChatId(), message.getMessageId());
+        if (message.isUserMessage()) {
+            if (message.isCommand()) {
+                parseCommand(message);
+            } else if (message.hasPhoto() || message.hasVideo()) {
+                parseMedia(message);
+            } else if (message.hasText()) {
+                parseTextMessage(message);
+            } else {
+                sender.deleteMessage(message.getChatId(), message.getMessageId());
+            }
         }
     }
 
