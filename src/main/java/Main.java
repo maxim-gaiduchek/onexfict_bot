@@ -61,6 +61,12 @@ public class Main extends TelegramLongPollingBot {
             } else {
                 sender.deleteMessage(message.getChatId(), message.getMessageId());
             }
+        } else if (message.getNewChatMembers() != null) {
+            Long chatId = message.getChatId();
+
+            if (!chatId.toString().equals(AdminController.ADMIN_CHAT_ID)) {
+                sender.leaveChat(chatId);
+            }
         }
     }
 

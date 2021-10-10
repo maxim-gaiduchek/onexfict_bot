@@ -35,7 +35,7 @@ class Controller {
                 send.setMedias(fileIds.stream().map(fileString -> {
                     String fileId = fileString.substring(fileString.indexOf(':') + 1);
 
-                    return switch (fileString.substring(0, fileId.indexOf(':'))) {
+                    return switch (fileString.substring(0, fileString.indexOf(':'))) {
                         case "photo" -> new InputMediaPhoto(fileId);
                         case "video" -> new InputMediaVideo(fileId);
                         default -> null;

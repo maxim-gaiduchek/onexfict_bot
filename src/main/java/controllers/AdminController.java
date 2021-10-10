@@ -18,7 +18,7 @@ import java.util.List;
 
 public class AdminController {
 
-    private static final String ADMIN_CHAT_ID = "-1001523866129";
+    public static final String ADMIN_CHAT_ID = "-1001523866129";
 
     private AdminController() {
     }
