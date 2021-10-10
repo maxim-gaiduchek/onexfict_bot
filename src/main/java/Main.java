@@ -33,21 +33,6 @@ public class Main extends TelegramLongPollingBot {
     // start
 
     private Main() {
-        Post post13 = new Post();
-        Post post14 = new Post();
-        Post post15 = new Post();
-
-        post13.setPosted();
-        post14.setPosted();
-        post15.setPosted();
-
-        ChannelController.editPostLikesKeyboard(post13, sender, 13);
-        ChannelController.editPostLikesKeyboard(post14, sender, 14);
-        ChannelController.editPostLikesKeyboard(post15, sender, 15);
-
-        service.savePost(post13);
-        service.savePost(post14);
-        service.savePost(post15);
     }
 
     // parsing
