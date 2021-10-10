@@ -33,21 +33,6 @@ public class Main extends TelegramLongPollingBot {
     // start
 
     private Main() {
-        Post post13 = new Post();
-        Post post14 = new Post();
-        Post post15 = new Post();
-
-        post13.setPosted();
-        post14.setPosted();
-        post15.setPosted();
-
-        service.savePost(post13);
-        service.savePost(post14);
-        service.savePost(post15);
-
-        ChannelController.editPostLikesKeyboard(post13, sender, 13);
-        ChannelController.editPostLikesKeyboard(post14, sender, 14);
-        ChannelController.editPostLikesKeyboard(post15, sender, 15);
     }
 
     // parsing
@@ -172,6 +157,7 @@ public class Main extends TelegramLongPollingBot {
 
     private void parseCallbackQuery(CallbackQuery callbackQuery) {
         Message message = callbackQuery.getMessage();
+        Long chatId = message.getChatId();
         Integer messageId = message.getMessageId();
         Integer userId = callbackQuery.getFrom().getId();
 
@@ -188,6 +174,8 @@ public class Main extends TelegramLongPollingBot {
                 AdminController.editAdminAgreeKeyboard(post, sender, messageId);
                 if (post.getAgreesCount() >= AdminController.ADMIN_LIKES) {
                     ChannelController.post(post, sender);
+                    sender.removeKeyboard(chatId, messageId);
+                    sender.sendString(chatId, "Пост запостен", messageId);
                 }
 
                 service.savePost(post);

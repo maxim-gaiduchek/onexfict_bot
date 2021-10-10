@@ -860,6 +860,28 @@ public class SimpleSender extends DefaultAbsSender {
         return InlineKeyboardButton.builder().text(text).switchInlineQuery(switchInlineQuery).build();
     }
 
+    // remove keyboards
+
+    public Serializable removeKeyboard(Long chatId, Integer messageId) {
+        return removeKeyboard(chatId.toString(), messageId);
+    }
+
+    public Serializable removeKeyboard(String chatId, Integer messageId) {
+        EditMessageReplyMarkup editMessage = new EditMessageReplyMarkup();
+
+        editMessage.setChatId(chatId);
+        editMessage.setMessageId(messageId);
+        editMessage.setReplyMarkup(new InlineKeyboardMarkup());
+
+        try {
+            return execute(editMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     // token
 
     public String getBotToken() {
