@@ -175,7 +175,7 @@ public class Main extends TelegramLongPollingBot {
                 if (post.getAgreesCount() >= AdminController.ADMIN_LIKES) {
                     ChannelController.post(post, sender);
                     sender.removeKeyboard(chatId, messageId);
-                    sender.sendString(chatId, "Пост запостен", messageId);
+                    sender.sendString(chatId, "Пост подтвержден " + post.getWhoHasAgreed() + " и запостен", messageId);
                 }
 
                 service.savePost(post);

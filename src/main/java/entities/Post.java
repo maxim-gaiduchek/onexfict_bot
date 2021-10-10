@@ -63,6 +63,16 @@ public class Post {
         return agrees.size();
     }
 
+    public String getWhoHasAgreed() {
+        StringBuilder sb = new StringBuilder("[этим](tg://user?id=").append(agrees.get(0)).append(")");
+
+        for (int i = 1; i < agrees.size(); i++) {
+            sb.append(", [этим](tg://user?id=").append(agrees.get(i)).append(")");
+        }
+
+        return sb.toString();
+    }
+
     public boolean isNotPosted() {
         return !isPosted;
     }
