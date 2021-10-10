@@ -146,7 +146,7 @@ public class Main extends TelegramLongPollingBot {
         } else if (user.getStatus() == BotUser.Status.IS_ADDING_TEXT) {
             PostsCreator.addText(sender, user, message.getText());
 
-            AdminController.sendToAdmin(user.getPost(), sender);
+            AdminController.sendToAdmin(user.getPost(), message.getFrom(), sender);
             service.savePost(user.getPost());
             user.setPost(null);
         }
@@ -171,7 +171,7 @@ public class Main extends TelegramLongPollingBot {
                 post.switchAgree(userId);
 
                 AdminController.editAdminAgreeKeyboard(post, sender, messageId);
-                if (post.getAgreesCount() >= 2) {
+                if (post.getAgreesCount() >= AdminController.ADMIN_LIKES) {
                     ChannelController.post(post, sender);
                 }
 
