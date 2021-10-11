@@ -30,6 +30,8 @@ public class Main extends TelegramLongPollingBot {
     private static final ApplicationContext CONTEXT = new AnnotationConfigApplicationContext(DatasourceConfig.class);
     private final DBService service = (DBService) CONTEXT.getBean("service");
 
+    private static final String CREATE_POST_STRING = "Предложить пост";
+
     // start
 
     private Main() {
@@ -78,7 +80,7 @@ public class Main extends TelegramLongPollingBot {
         String command = message.getText();
 
         switch (user.getStatus()) {
-            case INACTIVE:
+            case INACTIVE -> {
                 switch (command) {
                     case "/start" -> startCommand(chatId);
                     case "/help" -> helpCommand(chatId);
@@ -87,10 +89,16 @@ public class Main extends TelegramLongPollingBot {
                         service.savePost(user.getPost());
                     }
                 }
-                break;
-            case IS_ADDING_PHOTO:
-                PostsCreator.sendAddText(sender, user);
-                break;
+            }
+            case IS_ADDING_PHOTO -> {
+                Post post = user.getPost();
+
+                if (post == null || post.getImagesFilesIds().size() == 0) {
+                    PostsCreator.sendAddPhoto(sender, chatId);
+                } else {
+                    PostsCreator.addPhoto(sender, chatId);
+                }
+            }
         }
 
         service.saveUser(user);
@@ -100,20 +108,24 @@ public class Main extends TelegramLongPollingBot {
         String msg = """
                 Это предложка 1xФИВТ (@onexfict). Тут можно предложить мем или новость""";
 
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-
-        row.add("Предложить пост");
-        keyboard.add(row);
-
-        sender.sendStringAndKeyboard(chatId, msg, keyboard, true);
+        sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
 
     private void helpCommand(Long chatId) {
         String msg = """
                 Это предложка 1xФИВТ (@onexfict). Введи /post, чтоб предложить мем""";
 
-        sender.sendString(chatId, msg);
+        sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
+    }
+
+    private List<KeyboardRow> getCreatePostKeyboard() {
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+
+        row.add(CREATE_POST_STRING);
+        keyboard.add(row);
+
+        return keyboard;
     }
 
     // photo media
@@ -145,7 +157,7 @@ public class Main extends TelegramLongPollingBot {
 
         switch (user.getStatus()) {
             case INACTIVE -> {
-                if (text.equals("Предложить пост")) {
+                if (text.equals(CREATE_POST_STRING)) {
                     PostsCreator.sendAddPhoto(sender, user);
                     service.savePost(user.getPost());
                 }
