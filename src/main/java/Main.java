@@ -70,6 +70,8 @@ public class Main extends TelegramLongPollingBot {
         }
     }
 
+    // commands
+
     private void parseCommand(Message message) {
         Long chatId = message.getChatId();
         BotUser user = service.getUser(chatId);
@@ -91,8 +93,6 @@ public class Main extends TelegramLongPollingBot {
             sender.deleteMessage(chatId, message.getMessageId());
         }
     }
-
-    // commands
 
     private void startCommand(Long chatId) {
         String msg = """
@@ -137,18 +137,36 @@ public class Main extends TelegramLongPollingBot {
     // text parsing
 
     private void parseTextMessage(Message message) {
-        BotUser user = service.getUser(message.getChatId());
+        Long chatId = message.getChatId();
+        BotUser user = service.getUser(chatId);
         String text = message.getText();
 
-        if (user.getStatus() == BotUser.Status.INACTIVE && text.equals("Предложить пост")) {
-            PostsCreator.sendAddPhoto(sender, user);
-            service.savePost(user.getPost());
-        } else if (user.getStatus() == BotUser.Status.IS_ADDING_TEXT) {
-            PostsCreator.addText(sender, user, message.getText());
+        switch (user.getStatus()) {
+            case INACTIVE -> {
+                if (text.equals("Предложить пост")) {
+                    PostsCreator.sendAddPhoto(sender, user);
+                    service.savePost(user.getPost());
+                }
+            }
+            case IS_ADDING_PHOTO -> {
+                if (text.equals(PostsCreator.STOP_ADDING_PHOTO_STRING)) {
+                    PostsCreator.sendAddText(sender, user);
+                } else {
+                    Post post = user.getPost();
 
-            AdminController.sendToAdmin(user.getPost(), message.getFrom(), sender);
-            service.savePost(user.getPost());
-            user.setPost(null);
+                    if (post == null || post.getImagesFilesIds().size() == 0) {
+                        PostsCreator.sendAddPhoto(sender, chatId);
+                    } else {
+                        PostsCreator.addPhoto(sender, chatId);
+                    }
+                }
+            }
+            case IS_ADDING_TEXT -> {
+                PostsCreator.addText(sender, user, message.getText());
+                AdminController.sendToAdmin(user.getPost(), message.getFrom(), sender);
+                service.savePost(user.getPost());
+                user.setPost(null);
+            }
         }
         service.saveUser(user);
     }
