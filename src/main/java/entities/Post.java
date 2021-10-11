@@ -24,6 +24,12 @@ public class Post {
     @Column(name = "text")
     private String text;
 
+    @Column(name = "from")
+    private String from;
+
+    @Column(name = "source")
+    private String source;
+
     @Column(name = "likes")
     @Convert(converter = StringToIntList.class)
     private List<Integer> likes = new ArrayList<>();
@@ -87,6 +93,14 @@ public class Post {
         this.text = text;
     }
 
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     public void switchLike(Integer userId) {
         if (likes.contains(userId)) {
             likes.remove(userId);
@@ -117,19 +131,26 @@ public class Post {
         Post post = (Post) o;
 
         if (id != post.id) return false;
-        if (!imagesFilesIds.equals(post.imagesFilesIds)) return false;
+        if (isPosted != post.isPosted) return false;
+        if (!Objects.equals(imagesFilesIds, post.imagesFilesIds))
+            return false;
         if (!Objects.equals(text, post.text)) return false;
-        if (!likes.equals(post.likes)) return false;
-        return agrees.equals(post.agrees);
+        if (!Objects.equals(from, post.from)) return false;
+        if (!Objects.equals(source, post.source)) return false;
+        if (!Objects.equals(likes, post.likes)) return false;
+        return Objects.equals(agrees, post.agrees);
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + imagesFilesIds.hashCode();
+        result = 31 * result + (imagesFilesIds != null ? imagesFilesIds.hashCode() : 0);
         result = 31 * result + (text != null ? text.hashCode() : 0);
-        result = 31 * result + likes.hashCode();
-        result = 31 * result + agrees.hashCode();
+        result = 31 * result + (from != null ? from.hashCode() : 0);
+        result = 31 * result + (source != null ? source.hashCode() : 0);
+        result = 31 * result + (likes != null ? likes.hashCode() : 0);
+        result = 31 * result + (agrees != null ? agrees.hashCode() : 0);
+        result = 31 * result + (isPosted ? 1 : 0);
         return result;
     }
 
@@ -139,8 +160,11 @@ public class Post {
                 "id=" + id +
                 ", imagesFilesIds=" + imagesFilesIds +
                 ", text='" + text + '\'' +
+                ", from='" + from + '\'' +
+                ", source='" + source + '\'' +
                 ", likes=" + likes +
                 ", agrees=" + agrees +
+                ", isPosted=" + isPosted +
                 '}';
     }
 }
