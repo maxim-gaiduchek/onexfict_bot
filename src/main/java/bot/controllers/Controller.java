@@ -1,8 +1,8 @@
 package bot.controllers;
 
 import bot.entities.Post;
+import bot.utils.SimpleSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -12,7 +12,6 @@ import org.telegram.telegrambots.meta.api.objects.media.InputMediaVideo;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import bot.utils.SimpleSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,30 +44,23 @@ class Controller {
                 }
 
                 message = sender.execute(send).get(0);
+                message = sender.sendString(chatId, "Оценивайте, господа", message.getMessageId());
             } else {
-                String fileId = fileIds.get(0);
-                InputFile file = new InputFile(fileId.substring(fileId.indexOf(':') + 1));
+                String fileIdString = fileIds.get(0);
+                String fileId = fileIdString.substring(fileIdString.indexOf(':') + 1);
 
-                if (fileId.startsWith("photo:")) {
-                    SendPhoto send = new SendPhoto();
-
-                    send.setChatId(chatId);
-                    send.setPhoto(file);
+                if (fileIdString.startsWith("photo:")) {
                     if (post.hasText()) {
-                        send.setCaption(post.getText());
+                        message = sender.sendPhoto(chatId, fileId, post.getText());
+                    } else {
+                        message = sender.sendPhoto(chatId, fileId);
                     }
-
-                    message = sender.execute(send);
                 } else { // video
-                    SendVideo send = new SendVideo();
-
-                    send.setChatId(chatId);
-                    send.setVideo(file);
                     if (post.hasText()) {
-                        send.setCaption(post.getText());
+                        message = sender.sendVideo(chatId, fileId, post.getText());
+                    } else {
+                        message = sender.sendVideo(chatId, fileId);
                     }
-
-                    message = sender.execute(send);
                 }
             }
 
@@ -87,10 +79,13 @@ class Controller {
             keyboard.add(row);
 
             EditMessageReplyMarkup edit = new EditMessageReplyMarkup();
+            InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+
+            markup.setKeyboard(keyboard);
 
             edit.setChatId(chatId);
             edit.setMessageId(messageId);
-            edit.setReplyMarkup(new InlineKeyboardMarkup(keyboard));
+            edit.setReplyMarkup(markup);
 
             sender.execute(edit);
         } catch (TelegramApiException e) {

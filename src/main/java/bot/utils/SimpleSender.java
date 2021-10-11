@@ -287,27 +287,17 @@ public class SimpleSender extends DefaultAbsSender {
     // video
 
     public Message sendVideo(String chatId, Video video) {
-        SendVideo sendVideo = new SendVideo();
-        sendVideo.setChatId(chatId);
-        sendVideo.setVideo(new InputFile(video.getFileId()));
-        try {
-            return execute(sendVideo);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return sendVideo(chatId, video.getFileId());
     }
 
     public Message sendVideo(Long chatId, Video video) {
         return sendVideo(chatId.toString(), video);
     }
 
-    public Message sendVideo(String chatId, Video video, String caption) {
+    public Message sendVideo(String chatId, String fileId) {
         SendVideo sendVideo = new SendVideo();
         sendVideo.setChatId(chatId);
-        sendVideo.setCaption(caption);
-        sendVideo.setParseMode("MarkdownV2");
-        sendVideo.setVideo(new InputFile(video.getFileId()));
+        sendVideo.setVideo(new InputFile(fileId));
         try {
             return execute(sendVideo);
         } catch (TelegramApiException e) {
@@ -316,8 +306,34 @@ public class SimpleSender extends DefaultAbsSender {
         return null;
     }
 
+    public Message sendVideo(Long chatId, String fileId) {
+        return sendVideo(chatId.toString(), fileId);
+    }
+
+    public Message sendVideo(String chatId, Video video, String caption) {
+        return sendVideo(chatId, video.getFileId(), caption);
+    }
+
     public Message sendVideo(Long chatId, Video video, String caption) {
         return sendVideo(chatId.toString(), video, caption);
+    }
+
+    public Message sendVideo(String chatId, String fileId, String caption) {
+        SendVideo sendVideo = new SendVideo();
+        sendVideo.setChatId(chatId);
+        sendVideo.setCaption(caption);
+        sendVideo.setParseMode("MarkdownV2");
+        sendVideo.setVideo(new InputFile(fileId));
+        try {
+            return execute(sendVideo);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Message sendVideo(Long chatId, String fileId, String caption) {
+        return sendVideo(chatId.toString(), fileId, caption);
     }
 
     // video note
