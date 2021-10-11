@@ -24,8 +24,8 @@ public class Post {
     @Column(name = "text")
     private String text;
 
-    @Column(name = "from")
-    private String from;
+    @Column(name = "by")
+    private String by;
 
     @Column(name = "source")
     private String source;
@@ -93,8 +93,8 @@ public class Post {
         this.text = text;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setBy(String from) {
+        this.by = from;
     }
 
     public void setSource(String source) {
@@ -135,7 +135,7 @@ public class Post {
         if (!Objects.equals(imagesFilesIds, post.imagesFilesIds))
             return false;
         if (!Objects.equals(text, post.text)) return false;
-        if (!Objects.equals(from, post.from)) return false;
+        if (!Objects.equals(by, post.by)) return false;
         if (!Objects.equals(source, post.source)) return false;
         if (!Objects.equals(likes, post.likes)) return false;
         return Objects.equals(agrees, post.agrees);
@@ -146,7 +146,7 @@ public class Post {
         int result = id;
         result = 31 * result + (imagesFilesIds != null ? imagesFilesIds.hashCode() : 0);
         result = 31 * result + (text != null ? text.hashCode() : 0);
-        result = 31 * result + (from != null ? from.hashCode() : 0);
+        result = 31 * result + (by != null ? by.hashCode() : 0);
         result = 31 * result + (source != null ? source.hashCode() : 0);
         result = 31 * result + (likes != null ? likes.hashCode() : 0);
         result = 31 * result + (agrees != null ? agrees.hashCode() : 0);
@@ -160,7 +160,7 @@ public class Post {
                 "id=" + id +
                 ", imagesFilesIds=" + imagesFilesIds +
                 ", text='" + text + '\'' +
-                ", from='" + from + '\'' +
+                ", by='" + by + '\'' +
                 ", source='" + source + '\'' +
                 ", likes=" + likes +
                 ", agrees=" + agrees +
