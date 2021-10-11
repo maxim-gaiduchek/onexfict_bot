@@ -71,7 +71,7 @@ public class PostsCreator {
 
     public static void sendAddBy(SimpleSender sender, BotUser user) {
         user.setStatus(BotUser.Status.IS_ADDING_BY);
-        sendAddText(sender, user.getChatId());
+        sendAddBy(sender, user.getChatId());
     }
 
     public static void addBy(SimpleSender sender, BotUser user, String by) {
