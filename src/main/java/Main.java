@@ -83,11 +83,11 @@ public class Main extends TelegramLongPollingBot {
             case INACTIVE -> {
                 switch (command) {
                     case "/start" -> startCommand(chatId);
-                    case "/help" -> helpCommand(chatId);
                     case "/post" -> {
                         PostsCreator.sendAddPhoto(sender, user);
                         service.savePost(user.getPost());
                     }
+                    default -> helpCommand(chatId);
                 }
             }
             case IS_ADDING_PHOTO -> {
@@ -131,21 +131,26 @@ public class Main extends TelegramLongPollingBot {
     // photo media
 
     private void parseMedia(Message message) {
-        BotUser user = service.getUser(message.getChatId());
+        Long chatId = message.getChatId();
+        BotUser user = service.getUser(chatId);
 
-        if (user.getStatus() == BotUser.Status.IS_ADDING_PHOTO) {
-            String fileId = null;
+        switch (user.getStatus()) {
+            case IS_ADDING_PHOTO -> {
+                String fileId = null;
 
-            if (message.hasPhoto()) {
-                fileId = "photo:" + message.getPhoto().get(0).getFileId();
-            } else if (message.hasVideo()) {
-                fileId = "video:" + message.getVideo().getFileId();
+                if (message.hasPhoto()) {
+                    fileId = "photo:" + message.getPhoto().get(0).getFileId();
+                } else if (message.hasVideo()) {
+                    fileId = "video:" + message.getVideo().getFileId();
+                }
+
+                PostsCreator.addPhoto(sender, user, fileId);
+                service.savePost(user.getPost());
             }
-
-            PostsCreator.addPhoto(sender, user, fileId);
-            service.savePost(user.getPost());
-            service.saveUser(user);
+            case IS_ADDING_TEXT -> PostsCreator.sendAddText(sender, chatId);
         }
+
+        service.saveUser(user);
     }
 
     // text parsing
@@ -178,10 +183,12 @@ public class Main extends TelegramLongPollingBot {
             case IS_ADDING_TEXT -> {
                 PostsCreator.addText(sender, user, message.getText());
                 AdminController.sendToAdmin(user.getPost(), message.getFrom(), sender);
+
                 service.savePost(user.getPost());
                 user.setPost(null);
             }
         }
+
         service.saveUser(user);
     }
 

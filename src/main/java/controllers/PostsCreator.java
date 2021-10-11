@@ -17,7 +17,7 @@ public class PostsCreator {
     // media
 
     public static void sendAddPhoto(SimpleSender sender, Long chatId) {
-        sender.sendString(chatId, "Скиньте мем");
+        sender.sendStringAndRemoveKeyboard(chatId, "Скиньте мем");
     }
 
     public static void sendAddPhoto(SimpleSender sender, BotUser user) {
@@ -41,12 +41,16 @@ public class PostsCreator {
 
     // text
 
-    public static void sendAddText(SimpleSender sender, BotUser user) {
+    public static void sendAddText(SimpleSender sender, Long chatId) {
         String msg = """
                 Напишите, от кого этот мем (под фото мема будет отображено "by <имя>")""";
 
+        sender.sendString(chatId, msg);
+    }
+
+    public static void sendAddText(SimpleSender sender, BotUser user) {
         user.setStatus(BotUser.Status.IS_ADDING_TEXT);
-        sender.sendString(user.getChatId(), msg);
+        sendAddText(sender, user.getChatId());
     }
 
     public static void addText(SimpleSender sender, BotUser user, String text) {
