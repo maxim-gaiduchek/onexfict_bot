@@ -1,7 +1,7 @@
-package entities;
+package bot.entities;
 
-import datasource.converters.StringToIntList;
-import datasource.converters.StringToStringList;
+import bot.datasource.converters.StringToIntList;
+import bot.datasource.converters.StringToStringList;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -41,7 +41,8 @@ public class Post {
     @Column(name = "is_posted")
     private boolean isPosted = false;
 
-    public Post() {}
+    public Post() {
+    }
 
     // getters
 
@@ -54,7 +55,11 @@ public class Post {
     }
 
     public String getText() {
-        return text;
+        return (text != null ? (text + "\n\n") : "") +
+                (by != null ? ("by " + by + "\n\n") : "") +
+                (source != null ? ("[источник](" + source + ")\n\n") : "") +
+                "\n" +
+                "@onexfict";
     }
 
     public boolean hasText() {

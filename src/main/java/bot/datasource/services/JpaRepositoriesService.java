@@ -1,9 +1,9 @@
-package datasource.services;
+package bot.datasource.services;
 
-import datasource.repositories.PostsRepository;
-import datasource.repositories.UsersRepository;
-import entities.Post;
-import entities.BotUser;
+import bot.datasource.repositories.PostsRepository;
+import bot.datasource.repositories.UsersRepository;
+import bot.entities.BotUser;
+import bot.entities.Post;
 import org.springframework.stereotype.Service;
 
 @Service

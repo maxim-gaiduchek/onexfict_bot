@@ -1,4 +1,4 @@
-package entities;
+package bot.entities;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -19,7 +19,8 @@ public class BotUser {
     @JoinColumn(name = "post_id", referencedColumnName = "id")
     private Post post;
 
-    protected BotUser() {}
+    protected BotUser() {
+    }
 
     public BotUser(long chatId) {
         this.chatId = chatId;
@@ -35,7 +36,7 @@ public class BotUser {
         return status;
     }
 
-    public Post getPost() {
+    public bot.entities.Post getPost() {
         return post;
     }
 
@@ -45,14 +46,16 @@ public class BotUser {
         this.status = status;
     }
 
-    public void setPost(Post post) {
+    public void setPost(bot.entities.Post post) {
         this.post = post;
     }
 
     // status
 
     public enum Status {
-        INACTIVE, IS_ADDING_PHOTO, IS_ADDING_TEXT
+        INACTIVE,
+        IS_ADDING_PHOTO, IS_ADDING_TEXT, IS_ADDING_BY, IS_ADDING_SOURCE,
+        IS_EDITING_PHOTO, IS_EDITING_TEXT, IS_EDITING_BY, IS_EDITING_SOURCE,
     }
 
     // core

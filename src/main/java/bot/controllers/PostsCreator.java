@@ -1,9 +1,10 @@
-package controllers;
+package bot.controllers;
 
-import entities.BotUser;
-import entities.Post;
+import bot.Main;
+import bot.entities.BotUser;
+import bot.entities.Post;
+import bot.utils.SimpleSender;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import utils.SimpleSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,8 @@ public class PostsCreator {
 
     public static final String STOP_ADDING_PHOTO_STRING = "Остановить добавление";
 
-    private PostsCreator() {}
+    private PostsCreator() {
+    }
 
     // media
 
@@ -43,7 +45,7 @@ public class PostsCreator {
 
     public static void sendAddText(SimpleSender sender, Long chatId) {
         String msg = """
-                Напишите, от кого этот мем (под фото мема будет отображено "by <имя>")""";
+                Введите текст к мему, который будет под фотками в посте""";
 
         sender.sendString(chatId, msg);
     }
@@ -54,23 +56,35 @@ public class PostsCreator {
     }
 
     public static void addText(SimpleSender sender, BotUser user, String text) {
+        user.setStatus(BotUser.Status.IS_ADDING_BY);
+        user.getPost().setText(text);
+        sendAddBy(sender, user);
+    }
+
+    // by
+
+    public static void sendAddBy(SimpleSender sender, Long chatId) {
+        String msg = """
+                Введите, от кого этот мем (под мемом будет отображено "by <имя>")""";
+
+        sender.sendString(chatId, msg);
+    }
+
+    public static void sendAddBy(SimpleSender sender, BotUser user) {
+        user.setStatus(BotUser.Status.IS_ADDING_BY);
+        sendAddText(sender, user.getChatId());
+    }
+
+    public static void addBy(SimpleSender sender, BotUser user, String by) {
         String msg = """
                 Спасибо за мемес. Его проверят админы и запостят на канал""";
 
-        if (!text.startsWith("by ")) text = "by " + text;
-
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-
-        row.add("Предложить пост");
-        keyboard.add(row);
+        if (!by.startsWith("by ")) by = "by " + by;
 
         user.setStatus(BotUser.Status.INACTIVE);
-        user.getPost().setText(text);
-        sender.sendStringAndKeyboard(user.getChatId(), msg, keyboard, true);
+        user.getPost().setText(by);
+        sender.sendStringAndKeyboard(user.getChatId(), msg, Main.getCreatePostKeyboard(), true);
     }
-
-    // from
 
     // source
 

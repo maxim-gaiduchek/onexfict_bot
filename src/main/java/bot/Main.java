@@ -1,10 +1,13 @@
-import controllers.AdminController;
-import controllers.ChannelController;
-import controllers.PostsCreator;
-import datasource.DatasourceConfig;
-import datasource.services.DBService;
-import entities.BotUser;
-import entities.Post;
+package bot;
+
+import bot.controllers.AdminController;
+import bot.controllers.ChannelController;
+import bot.controllers.PostsCreator;
+import bot.datasource.DatasourceConfig;
+import bot.datasource.services.DBService;
+import bot.entities.BotUser;
+import bot.entities.Post;
+import bot.utils.SimpleSender;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -15,7 +18,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import utils.SimpleSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +101,8 @@ public class Main extends TelegramLongPollingBot {
                     PostsCreator.addPhoto(sender, chatId);
                 }
             }
+            case IS_ADDING_TEXT -> PostsCreator.sendAddText(sender, chatId);
+            case IS_ADDING_BY -> PostsCreator.sendAddBy(sender, chatId);
         }
 
         service.saveUser(user);
@@ -118,7 +122,7 @@ public class Main extends TelegramLongPollingBot {
         sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
 
-    private List<KeyboardRow> getCreatePostKeyboard() {
+    public static List<KeyboardRow> getCreatePostKeyboard() {
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
 
@@ -148,6 +152,7 @@ public class Main extends TelegramLongPollingBot {
                 service.savePost(user.getPost());
             }
             case IS_ADDING_TEXT -> PostsCreator.sendAddText(sender, chatId);
+            case IS_ADDING_BY -> PostsCreator.sendAddBy(sender, chatId);
         }
 
         service.saveUser(user);
@@ -180,8 +185,9 @@ public class Main extends TelegramLongPollingBot {
                     }
                 }
             }
-            case IS_ADDING_TEXT -> {
-                PostsCreator.addText(sender, user, message.getText());
+            case IS_ADDING_TEXT -> PostsCreator.addText(sender, user, text);
+            case IS_ADDING_BY -> {
+                PostsCreator.addBy(sender, user, text);
                 AdminController.sendToAdmin(user.getPost(), message.getFrom(), sender);
 
                 service.savePost(user.getPost());

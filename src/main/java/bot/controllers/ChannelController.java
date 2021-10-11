@@ -1,13 +1,14 @@
-package controllers;
+package bot.controllers;
 
-import entities.Post;
-import utils.SimpleSender;
+import bot.entities.Post;
+import bot.utils.SimpleSender;
 
 public class ChannelController {
 
     private static final String CHANNEL_ID = "-1001586043042";
 
-    private ChannelController() {}
+    private ChannelController() {
+    }
 
     public static void post(Post post, SimpleSender sender) {
         if (post.isNotPosted()) {

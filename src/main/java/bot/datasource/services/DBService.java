@@ -1,7 +1,7 @@
-package datasource.services;
+package bot.datasource.services;
 
-import entities.Post;
-import entities.BotUser;
+import bot.entities.Post;
+import bot.entities.BotUser;
 
 public interface DBService {
 

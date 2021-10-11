@@ -1,4 +1,4 @@
-package utils;
+package bot.utils;
 
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;

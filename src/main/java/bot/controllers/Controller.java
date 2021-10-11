@@ -1,27 +1,26 @@
-package controllers;
+package bot.controllers;
 
-import entities.Post;
+import bot.entities.Post;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
-import org.telegram.telegrambots.meta.api.objects.media.InputMediaDocument;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaVideo;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import utils.SimpleSender;
+import bot.utils.SimpleSender;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class Controller {
 
-    private Controller() {}
+    private Controller() {
+    }
 
     static void send(Post post, SimpleSender sender, String chatId, String text, String query) {
         try {
@@ -55,7 +54,9 @@ class Controller {
 
                     send.setChatId(chatId);
                     send.setPhoto(file);
-                    if (post.hasText()) send.setCaption(post.getText());
+                    if (post.hasText()) {
+                        send.setCaption(post.getText());
+                    }
 
                     message = sender.execute(send);
                 } else { // video
@@ -63,7 +64,9 @@ class Controller {
 
                     send.setChatId(chatId);
                     send.setVideo(file);
-                    if (post.hasText()) send.setCaption(post.getText());
+                    if (post.hasText()) {
+                        send.setCaption(post.getText());
+                    }
 
                     message = sender.execute(send);
                 }
