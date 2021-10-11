@@ -58,7 +58,6 @@ public class Post {
         return (text != null ? (text + "\n\n") : "") +
                 (by != null ? ("by " + by + "\n\n") : "") +
                 (source != null ? ("[источник](" + source + ")\n\n") : "") +
-                "\n" +
                 "@onexfict";
     }
 

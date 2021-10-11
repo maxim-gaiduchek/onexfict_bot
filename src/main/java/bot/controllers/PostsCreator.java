@@ -56,7 +56,6 @@ public class PostsCreator {
     }
 
     public static void addText(SimpleSender sender, BotUser user, String text) {
-        user.setStatus(BotUser.Status.IS_ADDING_BY);
         user.getPost().setText(text);
         sendAddBy(sender, user);
     }
@@ -82,7 +81,7 @@ public class PostsCreator {
         if (!by.startsWith("by ")) by = "by " + by;
 
         user.setStatus(BotUser.Status.INACTIVE);
-        user.getPost().setText(by);
+        user.getPost().setBy(by);
         sender.sendStringAndKeyboard(user.getChatId(), msg, Main.getCreatePostKeyboard(), true);
     }
 
