@@ -77,21 +77,23 @@ public class Main extends TelegramLongPollingBot {
         BotUser user = service.getUser(chatId);
         String command = message.getText();
 
-        if (user.getStatus() == BotUser.Status.INACTIVE) {
-            switch (message.getText()) {
-                case "/start" -> startCommand(chatId);
-                case "/help" -> helpCommand(chatId);
-                case "/post" -> {
-                    PostsCreator.sendAddPhoto(sender, user);
-                    service.saveUser(user);
+        switch (user.getStatus()) {
+            case INACTIVE:
+                switch (command) {
+                    case "/start" -> startCommand(chatId);
+                    case "/help" -> helpCommand(chatId);
+                    case "/post" -> {
+                        PostsCreator.sendAddPhoto(sender, user);
+                        service.savePost(user.getPost());
+                    }
                 }
-            }
-        } else if (user.getStatus() == BotUser.Status.IS_ADDING_PHOTO && command.equals("/stop")) {
-            PostsCreator.sendAddText(sender, user);
-            service.saveUser(user);
-        } else {
-            sender.deleteMessage(chatId, message.getMessageId());
+                break;
+            case IS_ADDING_PHOTO:
+                PostsCreator.sendAddText(sender, user);
+                break;
         }
+
+        service.saveUser(user);
     }
 
     private void startCommand(Long chatId) {
