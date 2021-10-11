@@ -78,7 +78,7 @@ public class PostsCreator {
         String msg = """
                 Спасибо за мемес. Его проверят админы и запостят на канал""";
 
-        if (!by.startsWith("by ")) by = "by " + by;
+        if (by.startsWith("by ")) by = by.substring(3);
 
         user.setStatus(BotUser.Status.INACTIVE);
         user.getPost().setBy(by);

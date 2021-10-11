@@ -1,6 +1,10 @@
 package bot.entities;
 
+import bot.datasource.converters.StringToIntList;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,6 +22,10 @@ public class BotUser {
     @OneToOne
     @JoinColumn(name = "post_id", referencedColumnName = "id")
     private Post post;
+
+    @Column(name = "created_posts_ids")
+    @Convert(converter = StringToIntList.class)
+    private List<Integer> createdPostsIds = new ArrayList<>();
 
     protected BotUser() {
     }
@@ -46,8 +54,12 @@ public class BotUser {
         this.status = status;
     }
 
-    public void setPost(bot.entities.Post post) {
+    public void setPost(Post post) {
         this.post = post;
+    }
+
+    public void addCreatedPost(int postId) {
+        createdPostsIds.add(postId);
     }
 
     // status
@@ -82,10 +94,11 @@ public class BotUser {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "BotUser{" +
                 "chatId=" + chatId +
                 ", status=" + status +
                 ", post=" + post +
+                ", createdPostsIds=" + createdPostsIds +
                 '}';
     }
 }

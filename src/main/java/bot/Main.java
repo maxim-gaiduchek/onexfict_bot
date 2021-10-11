@@ -185,12 +185,19 @@ public class Main extends TelegramLongPollingBot {
                     }
                 }
             }
-            case IS_ADDING_TEXT -> PostsCreator.addText(sender, user, text);
+            case IS_ADDING_TEXT -> {
+                PostsCreator.addText(sender, user, text);
+                service.savePost(user.getPost());
+            }
             case IS_ADDING_BY -> {
                 PostsCreator.addBy(sender, user, text);
-                AdminController.sendToAdmin(user.getPost(), message.getFrom(), sender);
 
-                service.savePost(user.getPost());
+                Post post = user.getPost();
+
+                AdminController.sendToAdmin(user.getPost(), message.getFrom(), sender);
+                service.savePost(post);
+
+                user.addCreatedPost(post.getId());
                 user.setPost(null);
             }
         }
