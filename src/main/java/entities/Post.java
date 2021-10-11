@@ -66,10 +66,9 @@ public class Post {
     public String getWhoHasAgreed() {
         StringBuilder sb = new StringBuilder("[этим](tg://user?id=").append(agrees.get(0)).append(")");
 
-        for (int i = 1; i < agrees.size() - 1; i++) {
+        for (int i = 1; i < agrees.size(); i++) {
             sb.append(", [этим](tg://user?id=").append(agrees.get(i)).append(")");
         }
-        sb.append(" и [этим](tg://user?id=").append(agrees.get(agrees.size() - 1)).append(")");
 
         return sb.toString();
     }
