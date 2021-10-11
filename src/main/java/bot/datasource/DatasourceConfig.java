@@ -1,11 +1,11 @@
-package datasource;
+package bot.datasource;
 
+import bot.datasource.repositories.PostsRepository;
+import bot.datasource.repositories.UsersRepository;
+import bot.datasource.services.DBService;
+import bot.datasource.services.JpaRepositoriesService;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import datasource.repositories.PostsRepository;
-import datasource.repositories.UsersRepository;
-import datasource.services.JpaRepositoriesService;
-import datasource.services.DBService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableAutoConfiguration
 @EnableJpaRepositories
-@EntityScan("/entities")
+@EntityScan("/bot/entities")
 public class DatasourceConfig {
 
     private static final String JDBC_URL = System.getenv("JDBC_URL");
