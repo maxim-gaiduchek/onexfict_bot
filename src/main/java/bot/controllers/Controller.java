@@ -55,7 +55,7 @@ class Controller {
             editInlineKeyboard(post, sender, chatId, text, query, message.getMessageId());
         } catch (TelegramApiException e) {
             e.printStackTrace();
-        } // fo new commit
+        }
     }
 
     static void editInlineKeyboard(Post post, SimpleSender sender, String chatId, String text, String query, Integer messageId) {

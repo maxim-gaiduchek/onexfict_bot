@@ -12,6 +12,7 @@ import java.util.List;
 public class PostsCreator {
 
     public static final String STOP_ADDING_PHOTO_STRING = "Остановить добавление";
+    public static final String STOP_CREATING_POST_STRING = "Остановить создание мема";
     private static final String SKIP_ADDING_TEXT_STRING = "Пропустить этот шаг";
 
     private PostsCreator() {
@@ -96,21 +97,23 @@ public class PostsCreator {
     // keyboards
 
     private static List<KeyboardRow> getAddPhotoKeyboard() {
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-
-        row.add(STOP_ADDING_PHOTO_STRING);
-        keyboard.add(row);
-
-        return keyboard;
+        return getKeyboard(STOP_ADDING_PHOTO_STRING);
     }
 
     private static List<KeyboardRow> getSkipStepKeyboard() {
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
+        return getKeyboard(SKIP_ADDING_TEXT_STRING);
+    }
 
-        row.add(SKIP_ADDING_TEXT_STRING);
-        keyboard.add(row);
+    private static List<KeyboardRow> getKeyboard(String str) {
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
+
+        row1.add(STOP_CREATING_POST_STRING);
+        row2.add(str);
+
+        keyboard.add(row1);
+        keyboard.add(row2);
 
         return keyboard;
     }

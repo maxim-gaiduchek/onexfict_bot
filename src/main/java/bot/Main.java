@@ -165,6 +165,15 @@ public class Main extends TelegramLongPollingBot {
         BotUser user = service.getUser(chatId);
         String text = message.getText();
 
+        if (text.equals(PostsCreator.STOP_CREATING_POST_STRING)) {
+            if (user.getStatus() != BotUser.Status.INACTIVE) {
+                user.setStatus(BotUser.Status.INACTIVE);
+                sender.sendStringAndKeyboard(chatId, "Создание мема прекращено", getCreatePostKeyboard(), true);
+            } else {
+                helpCommand(chatId);
+            }
+        }
+
         switch (user.getStatus()) {
             case INACTIVE -> {
                 if (text.equals(CREATE_POST_STRING)) {
