@@ -12,7 +12,7 @@ import java.util.List;
 public class PostsCreator {
 
     public static final String STOP_ADDING_PHOTO_STRING = "Остановить добавление";
-    public static final String STOP_CREATING_POST_STRING = "Остановить создание мема";
+    public static final String STOP_CREATING_POST_STRING = "Остановить создание поста";
     private static final String SKIP_ADDING_TEXT_STRING = "Пропустить этот шаг";
 
     private PostsCreator() {
