@@ -3,9 +3,7 @@ package bot.controllers;
 import bot.entities.Post;
 import bot.utils.SimpleSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
-import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaVideo;
@@ -39,9 +37,7 @@ class Controller {
                         default -> null;
                     };
                 }).toList());
-                if (post.hasText()) {
-                    send.getMedias().get(0).setCaption(post.getText());
-                }
+                send.getMedias().get(0).setCaption(post.getPostText());
 
                 message = sender.execute(send).get(0);
                 message = sender.sendString(chatId, "Оценивайте, господа", message.getMessageId());
@@ -50,17 +46,9 @@ class Controller {
                 String fileId = fileIdString.substring(fileIdString.indexOf(':') + 1);
 
                 if (fileIdString.startsWith("photo:")) {
-                    if (post.hasText()) {
-                        message = sender.sendPhoto(chatId, fileId, post.getText());
-                    } else {
-                        message = sender.sendPhoto(chatId, fileId);
-                    }
+                    message = sender.sendPhoto(chatId, fileId, post.getPostText());
                 } else { // video
-                    if (post.hasText()) {
-                        message = sender.sendVideo(chatId, fileId, post.getText());
-                    } else {
-                        message = sender.sendVideo(chatId, fileId);
-                    }
+                    message = sender.sendVideo(chatId, fileId, post.getPostText());
                 }
             }
 

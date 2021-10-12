@@ -54,15 +54,11 @@ public class Post {
         return imagesFilesIds;
     }
 
-    public String getText() {
+    public String getPostText() {
         return (text != null ? (text + "\n\n") : "") +
                 (by != null ? ("by " + by + "\n\n") : "") +
                 (source != null ? ("[источник](" + source + ")\n\n") : "") +
                 "@onexfict";
-    }
-
-    public boolean hasText() {
-        return text != null;
     }
 
     public int getLikesCount() {
