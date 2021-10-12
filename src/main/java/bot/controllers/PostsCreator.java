@@ -12,6 +12,7 @@ import java.util.List;
 public class PostsCreator {
 
     public static final String STOP_ADDING_PHOTO_STRING = "Остановить добавление";
+    private static final String SKIP_ADDING_TEXT_STRING = "Пропустить этот шаг";
 
     private PostsCreator() {
     }
@@ -47,7 +48,7 @@ public class PostsCreator {
         String msg = """
                 Введите текст к мему, который будет под фотками в посте""";
 
-        sender.sendString(chatId, msg);
+        sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
 
     public static void sendAddText(SimpleSender sender, BotUser user) {
@@ -56,7 +57,9 @@ public class PostsCreator {
     }
 
     public static void addText(SimpleSender sender, BotUser user, String text) {
-        user.getPost().setText(text);
+        if (!text.equals(SKIP_ADDING_TEXT_STRING)) {
+            user.getPost().setText(text);
+        }
         sendAddBy(sender, user);
     }
 
@@ -66,7 +69,7 @@ public class PostsCreator {
         String msg = """
                 Введите, от кого этот мем (под мемом будет отображено "by <имя>")""";
 
-        sender.sendString(chatId, msg);
+        sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
 
     public static void sendAddBy(SimpleSender sender, BotUser user) {
@@ -78,10 +81,13 @@ public class PostsCreator {
         String msg = """
                 Спасибо за мемес. Его проверят админы и запостят на канал""";
 
-        if (by.startsWith("by ")) by = by.substring(3);
+        if (!by.equals(SKIP_ADDING_TEXT_STRING)) {
+            if (by.startsWith("by ")) by = by.substring(3);
+
+            user.getPost().setBy(by);
+        }
 
         user.setStatus(BotUser.Status.INACTIVE);
-        user.getPost().setBy(by);
         sender.sendStringAndKeyboard(user.getChatId(), msg, Main.getCreatePostKeyboard(), true);
     }
 
@@ -94,6 +100,16 @@ public class PostsCreator {
         KeyboardRow row = new KeyboardRow();
 
         row.add(STOP_ADDING_PHOTO_STRING);
+        keyboard.add(row);
+
+        return keyboard;
+    }
+
+    private static List<KeyboardRow> getSkipStepKeyboard() {
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+
+        row.add(SKIP_ADDING_TEXT_STRING);
         keyboard.add(row);
 
         return keyboard;
