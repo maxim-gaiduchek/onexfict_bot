@@ -51,7 +51,7 @@ public class JpaRepositoriesService implements DBService {
     @Override
     public int getPostedPostsTop(BotUser user) {
         List<BotUser> top = usersRepository.findAll().stream()
-                .sorted(Comparator.comparing(topUser -> -getPostedPostsTop(topUser)))
+                .sorted(Comparator.comparing(topUser -> -getPostedPostsCount(topUser)))
                 .toList();
 
         return top.indexOf(user);
