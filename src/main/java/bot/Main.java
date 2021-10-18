@@ -122,7 +122,7 @@ public class Main extends TelegramLongPollingBot {
         BotUser user = service.getUser(chatId);
 
         int posts = user.getCreatedPostsIds().size();
-        int likes = service.getLikesSum(user.getCreatedPostsIds());
+        int likes = service.getLikesSum(user);
         float likesPerPost = posts == 0 ? 0 : (float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
 
         int topPosts = service.getPostedPostsTop(user);

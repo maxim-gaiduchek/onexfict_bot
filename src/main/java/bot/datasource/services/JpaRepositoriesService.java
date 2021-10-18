@@ -51,15 +51,19 @@ public class JpaRepositoriesService implements DBService {
     @Override
     public int getPostedPostsTop(BotUser user) {
         List<BotUser> top = usersRepository.findAll().stream()
-                .sorted(Comparator.comparing(topUser -> -getPostedPostsCount(topUser)))
+                .sorted((topUser1, topUser2) -> {
+                    int first = getPostedPostsCount(topUser1), second = getPostedPostsCount(topUser2);
+
+                    return first == second ? getLikesSum(topUser2) - getLikesSum(topUser1) : second - first;
+                })
                 .toList();
 
         return top.indexOf(user) + 1;
     }
 
     @Override
-    public int getLikesSum(List<Integer> ids) {
-        return postsRepository.findAllById(ids).stream()
+    public int getLikesSum(BotUser user) {
+        return postsRepository.findAllById(user.getCreatedPostsIds()).stream()
                 .mapToInt(Post::getLikesCount)
                 .sum();
     }
@@ -68,7 +72,7 @@ public class JpaRepositoriesService implements DBService {
     public int getLikesTop(BotUser user) {
         List<BotUser> top = usersRepository.findAll().stream()
                 .sorted((topUser1, topUser2) -> {
-                    int first = getLikesSum(topUser1.getCreatedPostsIds()), second = getLikesSum(topUser2.getCreatedPostsIds());
+                    int first = getLikesSum(topUser1), second = getLikesSum(topUser2);
 
                     return first == second ? getPostedPostsCount(topUser1) - getPostedPostsCount(topUser2) : second - first;
                 })
@@ -83,7 +87,7 @@ public class JpaRepositoriesService implements DBService {
 
         for (BotUser topUser : usersRepository.findAll()) {
             int posts = topUser.getCreatedPostsIds().size();
-            int likes = getLikesSum(topUser.getCreatedPostsIds());
+            int likes = getLikesSum(topUser);
             float likesPerPosts = posts == 0 ? 0 : (float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
 
             top.put(topUser, likesPerPosts);
