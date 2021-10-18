@@ -7,7 +7,9 @@ import bot.entities.Post;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class JpaRepositoriesService implements DBService {
@@ -73,16 +75,22 @@ public class JpaRepositoriesService implements DBService {
 
     @Override
     public int getLikesPerPostTop(BotUser user) {
-        List<BotUser> top = usersRepository.findAll().stream()
-                .sorted(Comparator.comparing(topUser -> {
-                    int posts = user.getCreatedPostsIds().size();
-                    int likes = getLikesSum(user.getCreatedPostsIds());
+        Map<BotUser, Float> top = new HashMap<>();
 
-                    return posts == 0 ? 0 : -(float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
-                }))
+        for (BotUser topUser : usersRepository.findAll()) {
+            int posts = topUser.getCreatedPostsIds().size();
+            int likes = getLikesSum(topUser.getCreatedPostsIds());
+            float likesPerPosts = posts == 0 ? 0 : -(float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
+
+            top.put(topUser, likesPerPosts);
+        }
+
+        List<BotUser> topUsers = top.entrySet().stream()
+                .sorted(Comparator.comparing(entry -> -entry.getValue()))
+                .map(Map.Entry::getKey)
                 .toList();
 
-        return top.indexOf(user);
+        return topUsers.indexOf(user);
     }
 
     // posts
