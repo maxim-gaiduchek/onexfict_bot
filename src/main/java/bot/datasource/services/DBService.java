@@ -15,7 +15,13 @@ public interface DBService {
 
     int getPostedPostsCount(BotUser user);
 
+    int getPostedPostsTop(BotUser user);
+
     int getLikesSum(List<Integer> ids);
+
+    int getLikesTop(BotUser user);
+
+    int getLikesPerPostTop(BotUser user);
 
     // posts
 

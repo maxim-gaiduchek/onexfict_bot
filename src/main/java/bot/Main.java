@@ -19,7 +19,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,11 +125,40 @@ public class Main extends TelegramLongPollingBot {
         int likes = service.getLikesSum(user.getCreatedPostsIds());
         float likesPerPost = posts == 0 ? 0 : (float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
 
+        int topPosts = service.getPostedPostsTop(user);
+        String topPostsString = switch (topPosts) {
+            case 1 -> " (Топ 1\uD83E\uDD47)";
+            case 2 -> " (Топ 2\uD83E\uDD48)";
+            case 3 -> " (Топ 3\uD83E\uDD49)";
+            default -> " (Топ " + topPosts + ")";
+        };
+
+        int topLikes = service.getLikesTop(user);
+        String topLikesString = switch (topLikes) {
+            case 1 -> " (Топ 1\uD83E\uDD47)";
+            case 2 -> " (Топ 2\uD83E\uDD48)";
+            case 3 -> " (Топ 3\uD83E\uDD49)";
+            default -> " Топ " + topLikes + ")";
+        };
+
+        String topLikesPerPostString = "";
+
+        if (posts >= 5) {
+            int topLikesPerPost = service.getLikesPerPostTop(user);
+
+            topLikesPerPostString = switch (topLikesPerPost) {
+                case 1 -> " (Топ 1\uD83E\uDD47)";
+                case 2 -> " (Топ 2\uD83E\uDD48)";
+                case 3 -> " (Топ 3\uD83E\uDD49)";
+                default -> "Топ " + topLikesPerPost + ")";
+            };
+        }
+
         String msg = "\uD83D\uDCCA *Твоя статистика*\n" +
                 "\n" +
-                "📃 Постов запостили: *" + posts + "*\n" +
-                "❤️ Лайков всего: *" + likes + "*\n" +
-                "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*";
+                "📃 Постов запостили: *" + posts + "*" + topPostsString + "\n" +
+                "❤️ Лайков всего: *" + likes + "*" + topLikesString + "\n" +
+                "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*" + topLikesPerPostString;
 
         sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
@@ -138,7 +166,7 @@ public class Main extends TelegramLongPollingBot {
     private void helpCommand(Long chatId) {
         String msg = """
                 Это предложка 1xФИВТ (@onexfict).
-                
+                                
                 Введи /post, чтоб предложить мем
                 Введи /stats, чтоб глянуть свою статистику мемодела""";
 
