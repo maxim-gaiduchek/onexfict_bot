@@ -100,15 +100,22 @@ public class PostsCreator {
     }
 
     public static void addSource(SimpleSender sender, BotUser user, String source) {
-        String msg = """
-                Спасибо за мемес. Его проверят админы и запостят на канал""";
+        if (source.startsWith("https://")) {
+            String msg = """
+                    Спасибо за мемес. Его проверят админы и запостят на канал""";
 
-        if (!source.equals(SKIP_ADDING_TEXT_STRING)) {
-            user.getPost().setSource(source);
+            if (!source.equals(SKIP_ADDING_TEXT_STRING)) {
+                user.getPost().setSource(source);
+            }
+
+            user.setStatus(BotUser.Status.INACTIVE);
+            sender.sendStringAndKeyboard(user.getChatId(), msg, Main.getCreatePostKeyboard(), true);
+        } else {
+            String msg = """
+                    Ссылка должна начинаться на "https://\"""";
+
+            sender.sendStringAndKeyboard(user.getChatId(), msg, getSkipStepKeyboard(), true);
         }
-
-        user.setStatus(BotUser.Status.INACTIVE);
-        sender.sendStringAndKeyboard(user.getChatId(), msg, Main.getCreatePostKeyboard(), true);
     }
 
     // keyboards
