@@ -67,7 +67,11 @@ public class JpaRepositoriesService implements DBService {
     @Override
     public int getLikesTop(BotUser user) {
         List<BotUser> top = usersRepository.findAll().stream()
-                .sorted(Comparator.comparing(topUser -> -getLikesSum(topUser.getCreatedPostsIds())))
+                .sorted((topUser1, topUser2) -> {
+                    int first = getLikesSum(topUser1.getCreatedPostsIds()), second = getLikesSum(topUser2.getCreatedPostsIds());
+
+                    return first == second ? getPostedPostsCount(topUser1) - getPostedPostsCount(topUser2) : second - first;
+                })
                 .toList();
 
         return top.indexOf(user) + 1;
