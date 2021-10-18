@@ -94,6 +94,30 @@ public class PostsCreator {
 
     // source
 
+    public static void sendAddSource(SimpleSender sender, Long chatId) {
+        String msg = """
+                Введите источник на этот мем (если надо)""";
+
+        sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
+    }
+
+    public static void sendAddSource(SimpleSender sender, BotUser user) {
+        user.setStatus(BotUser.Status.IS_ADDING_SOURCE);
+        sendAddSource(sender, user.getChatId());
+    }
+
+    public static void addSource(SimpleSender sender, BotUser user, String source) {
+        String msg = """
+                Спасибо за мемес. Его проверят админы и запостят на канал""";
+
+        if (!source.equals(SKIP_ADDING_TEXT_STRING)) {
+            user.getPost().setSource(source);
+        }
+
+        user.setStatus(BotUser.Status.INACTIVE);
+        sender.sendStringAndKeyboard(user.getChatId(), msg, Main.getCreatePostKeyboard(), true);
+    }
+
     // keyboards
 
     private static List<KeyboardRow> getAddPhotoKeyboard() {

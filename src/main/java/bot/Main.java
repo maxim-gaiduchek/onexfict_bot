@@ -103,6 +103,7 @@ public class Main extends TelegramLongPollingBot {
             }
             case IS_ADDING_TEXT -> PostsCreator.sendAddText(sender, chatId);
             case IS_ADDING_BY -> PostsCreator.sendAddBy(sender, chatId);
+            case IS_ADDING_SOURCE -> PostsCreator.sendAddSource(sender, chatId);
         }
 
         service.saveUser(user);
@@ -207,6 +208,10 @@ public class Main extends TelegramLongPollingBot {
             }
             case IS_ADDING_BY -> {
                 PostsCreator.addBy(sender, user, text);
+                service.savePost(user.getPost());
+            }
+            case IS_ADDING_SOURCE -> {
+                PostsCreator.addSource(sender, user, text);
 
                 Post post = user.getPost();
 
