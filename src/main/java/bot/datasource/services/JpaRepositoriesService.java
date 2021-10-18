@@ -80,12 +80,13 @@ public class JpaRepositoriesService implements DBService {
         for (BotUser topUser : usersRepository.findAll()) {
             int posts = topUser.getCreatedPostsIds().size();
             int likes = getLikesSum(topUser.getCreatedPostsIds());
-            float likesPerPosts = posts == 0 ? 0 : -(float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
+            float likesPerPosts = posts == 0 ? 0 : (float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
 
             top.put(topUser, likesPerPosts);
         }
 
         List<BotUser> topUsers = top.entrySet().stream()
+                .filter(entry -> entry.getKey().getCreatedPostsIds().size() >= 5)
                 .sorted(Comparator.comparing(entry -> -entry.getValue()))
                 .map(Map.Entry::getKey)
                 .toList();
