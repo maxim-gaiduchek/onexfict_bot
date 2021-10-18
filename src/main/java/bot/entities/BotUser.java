@@ -44,8 +44,12 @@ public class BotUser {
         return status;
     }
 
-    public bot.entities.Post getPost() {
+    public Post getPost() {
         return post;
+    }
+
+    public List<Integer> getCreatedPostsIds() {
+        return createdPostsIds;
     }
 
     // setters

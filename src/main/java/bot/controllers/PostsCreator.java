@@ -129,16 +129,6 @@ public class PostsCreator {
     }
 
     private static List<KeyboardRow> getKeyboard(String str) {
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row1 = new KeyboardRow();
-        KeyboardRow row2 = new KeyboardRow();
-
-        row1.add(STOP_CREATING_POST_STRING);
-        row2.add(str);
-
-        keyboard.add(row1);
-        keyboard.add(row2);
-
-        return keyboard;
+        return Main.getTwoRowsKeyboard(STOP_CREATING_POST_STRING, str);
     }
 }

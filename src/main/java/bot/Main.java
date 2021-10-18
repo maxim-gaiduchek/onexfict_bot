@@ -19,6 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class Main extends TelegramLongPollingBot {
     private static final ApplicationContext CONTEXT = new AnnotationConfigApplicationContext(DatasourceConfig.class);
     private final DBService service = (DBService) CONTEXT.getBean("service");
 
+    private static final String STATS_STRING = "\uD83D\uDCCA Моя статистика";
     private static final String CREATE_POST_STRING = "\uD83D\uDCC3 Предложить пост";
 
     // start
@@ -85,6 +87,7 @@ public class Main extends TelegramLongPollingBot {
             case INACTIVE -> {
                 switch (command) {
                     case "/start" -> startCommand(chatId);
+                    case "/stats" -> statsCommand(chatId);
                     case "/post" -> {
                         PostsCreator.sendAddPhoto(sender, user);
                         service.savePost(user.getPost());
@@ -116,21 +119,30 @@ public class Main extends TelegramLongPollingBot {
         sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
 
-    private void helpCommand(Long chatId) {
-        String msg = """
-                Это предложка 1xФИВТ (@onexfict). Введи /post, чтоб предложить мем""";
+    private void statsCommand(Long chatId) {
+        BotUser user = service.getUser(chatId);
+
+        int posts = user.getCreatedPostsIds().size();
+        int likes = service.getLikesSum(user.getCreatedPostsIds());
+        float likesPerPost = posts == 0 ? 0 : (float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
+
+        String msg = "\uD83D\uDCCA *Твоя статистика*\n" +
+                "\n" +
+                "📃 Постов запостили: *" + posts + "*\n" +
+                "❤️ Лайков всего: *" + likes + "*\n" +
+                "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*";
 
         sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
 
-    public static List<KeyboardRow> getCreatePostKeyboard() {
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
+    private void helpCommand(Long chatId) {
+        String msg = """
+                Это предложка 1xФИВТ (@onexfict).
+                
+                Введи /post, чтоб предложить мем
+                Введи /stats, чтоб глянуть свою статистику мемодела""";
 
-        row.add(CREATE_POST_STRING);
-        keyboard.add(row);
-
-        return keyboard;
+        sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
 
     // photo media
@@ -187,6 +199,10 @@ public class Main extends TelegramLongPollingBot {
                 if (text.equals(CREATE_POST_STRING)) {
                     PostsCreator.sendAddPhoto(sender, user);
                     service.savePost(user.getPost());
+                } else if (text.equals(STATS_STRING)) {
+                    statsCommand(chatId);
+                } else {
+                    helpCommand(chatId);
                 }
             }
             case IS_ADDING_PHOTO -> {
@@ -264,6 +280,26 @@ public class Main extends TelegramLongPollingBot {
                 service.savePost(post);
             }
         }
+    }
+
+    // keyboards
+
+    public static List<KeyboardRow> getTwoRowsKeyboard(String first, String second) {
+        List<KeyboardRow> keyboard = new ArrayList<>();
+        KeyboardRow firstRow = new KeyboardRow();
+        KeyboardRow secondRow = new KeyboardRow();
+
+        firstRow.add(first);
+        secondRow.add(second);
+
+        keyboard.add(firstRow);
+        keyboard.add(secondRow);
+
+        return keyboard;
+    }
+
+    public static List<KeyboardRow> getCreatePostKeyboard() {
+        return getTwoRowsKeyboard(STATS_STRING, CREATE_POST_STRING);
     }
 
     // main

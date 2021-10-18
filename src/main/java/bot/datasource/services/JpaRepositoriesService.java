@@ -6,6 +6,8 @@ import bot.entities.BotUser;
 import bot.entities.Post;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class JpaRepositoriesService implements DBService {
 
@@ -34,6 +36,20 @@ public class JpaRepositoriesService implements DBService {
     @Override
     public void saveUser(BotUser user) {
         usersRepository.save(user);
+    }
+
+    @Override
+    public int getPostedPostsCount(BotUser user) {
+        return (int) postsRepository.findAllById(user.getCreatedPostsIds()).stream()
+                .filter(post -> !post.isNotPosted())
+                .count();
+    }
+
+    @Override
+    public int getLikesSum(List<Integer> ids) {
+        return postsRepository.findAllById(ids).stream()
+                .mapToInt(Post::getLikesCount)
+                .sum();
     }
 
     // posts

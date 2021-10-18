@@ -3,6 +3,8 @@ package bot.datasource.services;
 import bot.entities.Post;
 import bot.entities.BotUser;
 
+import java.util.List;
+
 public interface DBService {
 
     // users
@@ -10,6 +12,10 @@ public interface DBService {
     BotUser getUser(Long id);
 
     void saveUser(BotUser user);
+
+    int getPostedPostsCount(BotUser user);
+
+    int getLikesSum(List<Integer> ids);
 
     // posts
 
