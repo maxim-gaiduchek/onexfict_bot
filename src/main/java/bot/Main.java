@@ -138,7 +138,7 @@ public class Main extends TelegramLongPollingBot {
             case 1 -> " (Топ 1\uD83E\uDD47)";
             case 2 -> " (Топ 2\uD83E\uDD48)";
             case 3 -> " (Топ 3\uD83E\uDD49)";
-            default -> " Топ " + topLikes + ")";
+            default -> " (Топ " + topLikes + ")";
         };
 
         String topLikesPerPostString = "";
@@ -150,7 +150,7 @@ public class Main extends TelegramLongPollingBot {
                 case 1 -> " (Топ 1\uD83E\uDD47)";
                 case 2 -> " (Топ 2\uD83E\uDD48)";
                 case 3 -> " (Топ 3\uD83E\uDD49)";
-                default -> "Топ " + topLikesPerPost + ")";
+                default -> " (Топ " + topLikesPerPost + ")";
             };
         }
 

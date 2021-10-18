@@ -54,7 +54,7 @@ public class JpaRepositoriesService implements DBService {
                 .sorted(Comparator.comparing(topUser -> -getPostedPostsCount(topUser)))
                 .toList();
 
-        return top.indexOf(user);
+        return top.indexOf(user) + 1;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class JpaRepositoriesService implements DBService {
                 .sorted(Comparator.comparing(topUser -> -getLikesSum(topUser.getCreatedPostsIds())))
                 .toList();
 
-        return top.indexOf(user);
+        return top.indexOf(user) + 1;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class JpaRepositoriesService implements DBService {
                 .map(Map.Entry::getKey)
                 .toList();
 
-        return topUsers.indexOf(user);
+        return topUsers.indexOf(user) + 1;
     }
 
     // posts
