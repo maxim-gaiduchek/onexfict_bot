@@ -94,28 +94,28 @@ public class PostsCreator {
         sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
 
+    public static void sendSourceError(SimpleSender sender, Long chatId) {
+        String msg = """
+                Ссылка должна начинаться на "https://\"""";
+
+        sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
+    }
+
     public static void sendAddSource(SimpleSender sender, BotUser user) {
         user.setStatus(BotUser.Status.IS_ADDING_SOURCE);
         sendAddSource(sender, user.getChatId());
     }
 
     public static void addSource(SimpleSender sender, BotUser user, String source) {
-        if (source.startsWith("https://")) {
-            String msg = """
+        String msg = """
                     Спасибо за мемес. Его проверят админы и запостят на канал""";
 
-            if (!source.equals(SKIP_ADDING_TEXT_STRING)) {
-                user.getPost().setSource(source);
-            }
-
-            user.setStatus(BotUser.Status.INACTIVE);
-            sender.sendStringAndKeyboard(user.getChatId(), msg, Main.getCreatePostKeyboard(), true);
-        } else {
-            String msg = """
-                    Ссылка должна начинаться на "https://\"""";
-
-            sender.sendStringAndKeyboard(user.getChatId(), msg, getSkipStepKeyboard(), true);
+        if (!source.equals(SKIP_ADDING_TEXT_STRING)) {
+            user.getPost().setSource(source);
         }
+
+        user.setStatus(BotUser.Status.INACTIVE);
+        sender.sendStringAndKeyboard(user.getChatId(), msg, Main.getCreatePostKeyboard(), true);
     }
 
     // keyboards

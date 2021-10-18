@@ -211,15 +211,19 @@ public class Main extends TelegramLongPollingBot {
                 service.savePost(user.getPost());
             }
             case IS_ADDING_SOURCE -> {
-                PostsCreator.addSource(sender, user, text);
+                if (text.startsWith("https://")) {
+                    PostsCreator.addSource(sender, user, text);
 
-                Post post = user.getPost();
+                    Post post = user.getPost();
 
-                AdminController.sendToAdmin(user.getPost(), message.getFrom(), sender);
-                service.savePost(post);
+                    AdminController.sendToAdmin(user.getPost(), message.getFrom(), sender);
+                    service.savePost(post);
 
-                user.addCreatedPost(post.getId());
-                user.setPost(null);
+                    user.addCreatedPost(post.getId());
+                    user.setPost(null);
+                } else {
+                    PostsCreator.sendSourceError(sender, user.getChatId());
+                }
             }
         }
 
