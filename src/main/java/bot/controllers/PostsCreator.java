@@ -79,17 +79,10 @@ public class PostsCreator {
     }
 
     public static void addBy(SimpleSender sender, BotUser user, String by) {
-        String msg = """
-                Спасибо за мемес. Его проверят админы и запостят на канал""";
-
         if (!by.equals(SKIP_ADDING_TEXT_STRING)) {
-            if (by.startsWith("by ")) by = by.substring(3);
-
             user.getPost().setBy(by);
         }
-
-        user.setStatus(BotUser.Status.INACTIVE);
-        sender.sendStringAndKeyboard(user.getChatId(), msg, Main.getCreatePostKeyboard(), true);
+        sendAddSource(sender, user);
     }
 
     // source
