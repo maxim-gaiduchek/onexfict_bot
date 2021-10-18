@@ -32,7 +32,7 @@ public class Main extends TelegramLongPollingBot {
     private static final ApplicationContext CONTEXT = new AnnotationConfigApplicationContext(DatasourceConfig.class);
     private final DBService service = (DBService) CONTEXT.getBean("service");
 
-    private static final String CREATE_POST_STRING = "Предложить пост";
+    private static final String CREATE_POST_STRING = "\uD83D\uDCC3 Предложить пост";
 
     // start
 

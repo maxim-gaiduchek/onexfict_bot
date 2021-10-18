@@ -11,9 +11,9 @@ import java.util.List;
 
 public class PostsCreator {
 
-    public static final String STOP_ADDING_PHOTO_STRING = "Остановить добавление";
-    public static final String STOP_CREATING_POST_STRING = "Остановить создание поста";
-    private static final String SKIP_ADDING_TEXT_STRING = "Пропустить этот шаг";
+    public static final String STOP_ADDING_PHOTO_STRING = "❌ Остановить добавление";
+    public static final String STOP_CREATING_POST_STRING = "❌ Остановить создание поста";
+    private static final String SKIP_ADDING_TEXT_STRING = "❌ Пропустить этот шаг";
 
     private PostsCreator() {
     }
@@ -89,7 +89,7 @@ public class PostsCreator {
 
     public static void sendAddSource(SimpleSender sender, Long chatId) {
         String msg = """
-                Введите источник на этот мем (если надо)""";
+                Введите источник к этому мему (если надо)""";
 
         sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
