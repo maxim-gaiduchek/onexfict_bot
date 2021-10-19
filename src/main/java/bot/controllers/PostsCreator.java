@@ -20,7 +20,7 @@ public class PostsCreator {
     // media
 
     public static void sendAddPhoto(SimpleSender sender, Long chatId) {
-        sender.sendStringAndRemoveKeyboard(chatId, "\uD83D\uDDBC Скиньте мем");
+        sender.sendStringAndKeyboard(chatId, "\uD83D\uDDBC Скиньте мем", getSkipStepKeyboard());
     }
 
     public static void sendAddPhoto(SimpleSender sender, BotUser user) {
