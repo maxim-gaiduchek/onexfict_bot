@@ -43,6 +43,7 @@ public class Main extends TelegramLongPollingBot {
     // start
 
     private Main() {
+        new Executor().start();
     }
 
     // parsing
@@ -128,7 +129,7 @@ public class Main extends TelegramLongPollingBot {
 
         int posts = user.getCreatedPostsIds().size();
         int likes = service.getLikesSum(user);
-        float likesPerPost = posts == 0 ? 0 : Formatter.round((float) posts / likes, 2);
+        float likesPerPost = posts == 0 ? 0 : Formatter.round((float) likes / posts, 2);
 
         String topPostsString = getTop(service.getPostedPostsTop(user));
         String topLikesString = getTop(service.getLikesTop(user));
@@ -161,7 +162,7 @@ public class Main extends TelegramLongPollingBot {
 
     private void helpCommand(Long chatId) {
         String msg = """
-                ❔ Это предложка 1xФИВТ (@onexfict).
+                ❓ Это предложка 1xФИВТ (@onexfict).
                                 
                 Введи /post, чтоб предложить мем
                 Введи /stats, чтоб глянуть свою статистику мемодела""";
@@ -364,7 +365,7 @@ public class Main extends TelegramLongPollingBot {
         private void sendAdminStats() {
             int posts = service.countAllPostedPosts();
             int likes = service.getAllLikesSum();
-            float likesPerPost = posts == 0 ? 0 : Formatter.round((float) posts / likes, 2);
+            float likesPerPost = posts == 0 ? 0 : Formatter.round((float) likes / posts, 2);
 
             int postsToday = service.countAllTodayPostedPosts();
 

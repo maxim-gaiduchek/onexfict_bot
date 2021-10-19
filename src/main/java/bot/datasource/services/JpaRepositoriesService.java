@@ -54,7 +54,7 @@ public class JpaRepositoriesService implements DBService {
 
     @Override
     public int countAllTodayPostedPosts() {
-        return 0;
+        return postsRepository.countAllTodayPostedPosts();
     }
 
     @Override
@@ -104,7 +104,7 @@ public class JpaRepositoriesService implements DBService {
         for (BotUser topUser : usersRepository.findAll()) {
             int posts = topUser.getCreatedPostsIds().size();
             int likes = getLikesSum(topUser);
-            float likesPerPosts = posts == 0 ? 0 : Formatter.round((float) posts / likes, 2);
+            float likesPerPosts = posts == 0 ? 0 : Formatter.round((float) likes / posts, 2);
 
             top.put(topUser, likesPerPosts);
         }
