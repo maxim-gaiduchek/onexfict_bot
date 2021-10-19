@@ -125,33 +125,12 @@ public class Main extends TelegramLongPollingBot {
         int likes = service.getLikesSum(user);
         float likesPerPost = posts == 0 ? 0 : (float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
 
-        int topPosts = service.getPostedPostsTop(user);
-        String topPostsString = switch (topPosts) {
-            case 1 -> " (Топ 1\uD83E\uDD47)";
-            case 2 -> " (Топ 2\uD83E\uDD48)";
-            case 3 -> " (Топ 3\uD83E\uDD49)";
-            default -> " (Топ " + topPosts + ")";
-        };
-
-        int topLikes = service.getLikesTop(user);
-        String topLikesString = switch (topLikes) {
-            case 1 -> " (Топ 1\uD83E\uDD47)";
-            case 2 -> " (Топ 2\uD83E\uDD48)";
-            case 3 -> " (Топ 3\uD83E\uDD49)";
-            default -> " (Топ " + topLikes + ")";
-        };
-
+        String topPostsString = getTop(service.getPostedPostsTop(user));
+        String topLikesString = getTop(service.getLikesTop(user));
         String topLikesPerPostString = "";
 
         if (posts >= 5) {
-            int topLikesPerPost = service.getLikesPerPostTop(user);
-
-            topLikesPerPostString = switch (topLikesPerPost) {
-                case 1 -> " (Топ 1\uD83E\uDD47)";
-                case 2 -> " (Топ 2\uD83E\uDD48)";
-                case 3 -> " (Топ 3\uD83E\uDD49)";
-                default -> " (Топ " + topLikesPerPost + ")";
-            };
+            topLikesPerPostString = getTop(service.getLikesPerPostTop(user));
         }
 
         String msg = "\uD83D\uDCCA *Твоя статистика*\n" +
@@ -161,6 +140,15 @@ public class Main extends TelegramLongPollingBot {
                 "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*" + topLikesPerPostString;
 
         sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
+    }
+
+    private String getTop(int top) {
+        return switch (top) {
+            case 1 -> " (Топ 1\uD83E\uDD47)";
+            case 2 -> " (Топ 2\uD83E\uDD48)";
+            case 3 -> " (Топ 3\uD83E\uDD49)";
+            default -> " (Топ " + top + ")";
+        };
     }
 
     private void helpCommand(Long chatId) {

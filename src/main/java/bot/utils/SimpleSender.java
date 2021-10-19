@@ -24,6 +24,7 @@ import org.telegram.telegrambots.meta.api.objects.stickers.Sticker;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -884,10 +885,13 @@ public class SimpleSender extends DefaultAbsSender {
 
     public Serializable removeKeyboard(String chatId, Integer messageId) {
         EditMessageReplyMarkup editMessage = new EditMessageReplyMarkup();
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+
+        markup.setKeyboard(new ArrayList<>());
 
         editMessage.setChatId(chatId);
         editMessage.setMessageId(messageId);
-        editMessage.setReplyMarkup(new InlineKeyboardMarkup());
+        editMessage.setReplyMarkup(markup);
 
         try {
             return execute(editMessage);
