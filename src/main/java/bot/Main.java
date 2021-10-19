@@ -139,7 +139,7 @@ public class Main extends TelegramLongPollingBot {
             topLikesPerPostString = getTop(service.getLikesPerPostTop(user));
         } else {
             String numeral = Formatter.formatNumeralText(5 - posts, "пост", "поста", "постов");
-            topLikesPerPostString = " (надо еще " + (5 - posts) + " " + numeral + " чтоб открылся топ)";
+            topLikesPerPostString = " (надо еще " + numeral + " чтоб открылся топ)";
         }
 
         String msg = "\uD83D\uDCCA *Твоя статистика*\n" +
