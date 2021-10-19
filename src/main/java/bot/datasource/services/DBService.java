@@ -13,11 +13,17 @@ public interface DBService {
 
     void saveUser(BotUser user);
 
-    int getPostedPostsCount(BotUser user);
+    int countPostedPosts(BotUser user);
+
+    int countAllPostedPosts();
+
+    int countAllTodayPostedPosts();
 
     int getPostedPostsTop(BotUser user);
 
     int getLikesSum(BotUser user);
+
+    int getAllLikesSum();
 
     int getLikesTop(BotUser user);
 

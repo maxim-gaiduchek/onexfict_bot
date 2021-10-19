@@ -7,6 +7,7 @@ import bot.datasource.DatasourceConfig;
 import bot.datasource.services.DBService;
 import bot.entities.BotUser;
 import bot.entities.Post;
+import bot.utils.Formatter;
 import bot.utils.SimpleSender;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -19,8 +20,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class Main extends TelegramLongPollingBot {
 
@@ -113,7 +118,7 @@ public class Main extends TelegramLongPollingBot {
 
     private void startCommand(Long chatId) {
         String msg = """
-                Это предложка 1xФИВТ (@onexfict). Тут можно предложить мем или новость""";
+                👋 Это предложка 1xФИВТ (@onexfict). Тут можно предложить мем или новость""";
 
         sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
@@ -123,14 +128,17 @@ public class Main extends TelegramLongPollingBot {
 
         int posts = user.getCreatedPostsIds().size();
         int likes = service.getLikesSum(user);
-        float likesPerPost = posts == 0 ? 0 : (float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
+        float likesPerPost = posts == 0 ? 0 : Formatter.round((float) posts / likes, 2);
 
         String topPostsString = getTop(service.getPostedPostsTop(user));
         String topLikesString = getTop(service.getLikesTop(user));
-        String topLikesPerPostString = "";
+        String topLikesPerPostString;
 
         if (posts >= 5) {
             topLikesPerPostString = getTop(service.getLikesPerPostTop(user));
+        } else {
+            String numeral = Formatter.formatNumeralText(5 - posts, "пост", "поста", "постов");
+            topLikesPerPostString = " (надо еще " + (5 - posts) + " " + numeral + " чтоб открылся топ)";
         }
 
         String msg = "\uD83D\uDCCA *Твоя статистика*\n" +
@@ -153,7 +161,7 @@ public class Main extends TelegramLongPollingBot {
 
     private void helpCommand(Long chatId) {
         String msg = """
-                Это предложка 1xФИВТ (@onexfict).
+                ❔ Это предложка 1xФИВТ (@onexfict).
                                 
                 Введи /post, чтоб предложить мем
                 Введи /stats, чтоб глянуть свою статистику мемодела""";
@@ -283,9 +291,16 @@ public class Main extends TelegramLongPollingBot {
 
                 AdminController.editAdminAgreeKeyboard(post, sender, messageId);
                 if (post.getAgreesCount() >= AdminController.ADMIN_LIKES) {
-                    ChannelController.post(post, sender);
+                    Integer postId = ChannelController.post(post, sender);
+
                     sender.removeKeyboard(chatId, messageId);
                     sender.sendString(chatId, "Пост подтвержден " + post.getWhoHasAgreed() + " и запостен", messageId);
+
+                    if (postId != null) {
+                        String msg = "[Пост](https://t.me/onexfict/" + postId + ") подтвержден и опубликован. Спасибо за поддержку❤️";
+
+                        sender.sendString(post.getCreatorId(), msg);
+                    }
                 }
 
                 service.savePost(post);
@@ -317,6 +332,50 @@ public class Main extends TelegramLongPollingBot {
 
     public static List<KeyboardRow> getCreatePostKeyboard() {
         return getTwoRowsKeyboard(STATS_STRING, CREATE_POST_STRING);
+    }
+
+    // executor
+
+    private class Executor extends Thread {
+
+        private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
+
+        static {
+            TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+3"));
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                String time = TIME_FORMAT.format(new Date());
+
+                if (time.equals("22:00")) {
+                    sendAdminStats();
+                }
+
+                try {
+                    sleep(60000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        private void sendAdminStats() {
+            int posts = service.countAllPostedPosts();
+            int likes = service.getAllLikesSum();
+            float likesPerPost = posts == 0 ? 0 : Formatter.round((float) posts / likes, 2);
+
+            int postsToday = service.countAllTodayPostedPosts();
+
+            String msg = "\uD83D\uDCCA *Статистика канала*\n" +
+                    "\n" +
+                    "📃 Постов запостили: *" + posts + "* (+" + postsToday + " за сегодня)\n" +
+                    "❤️ Лайков всего: *" + likes + "*\n" +
+                    "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*";
+
+            sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
+        }
     }
 
     // main

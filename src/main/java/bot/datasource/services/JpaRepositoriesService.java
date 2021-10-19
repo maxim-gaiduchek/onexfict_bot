@@ -4,6 +4,7 @@ import bot.datasource.repositories.PostsRepository;
 import bot.datasource.repositories.UsersRepository;
 import bot.entities.BotUser;
 import bot.entities.Post;
+import bot.utils.Formatter;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -42,17 +43,25 @@ public class JpaRepositoriesService implements DBService {
     }
 
     @Override
-    public int getPostedPostsCount(BotUser user) {
-        return (int) postsRepository.findAllById(user.getCreatedPostsIds()).stream()
-                .filter(post -> !post.isNotPosted())
-                .count();
+    public int countPostedPosts(BotUser user) {
+        return postsRepository.countAllByCreatorAndPosted(user);
+    }
+
+    @Override
+    public int countAllPostedPosts() {
+        return postsRepository.countAllByPosted();
+    }
+
+    @Override
+    public int countAllTodayPostedPosts() {
+        return 0;
     }
 
     @Override
     public int getPostedPostsTop(BotUser user) {
         List<BotUser> top = usersRepository.findAll().stream()
                 .sorted((topUser1, topUser2) -> {
-                    int first = getPostedPostsCount(topUser1), second = getPostedPostsCount(topUser2);
+                    int first = countPostedPosts(topUser1), second = countPostedPosts(topUser2);
 
                     return first == second ? getLikesSum(topUser2) - getLikesSum(topUser1) : second - first;
                 })
@@ -69,12 +78,19 @@ public class JpaRepositoriesService implements DBService {
     }
 
     @Override
+    public int getAllLikesSum() {
+        return postsRepository.findAll().stream()
+                .mapToInt(Post::getLikesCount)
+                .sum();
+    }
+
+    @Override
     public int getLikesTop(BotUser user) {
         List<BotUser> top = usersRepository.findAll().stream()
                 .sorted((topUser1, topUser2) -> {
                     int first = getLikesSum(topUser1), second = getLikesSum(topUser2);
 
-                    return first == second ? getPostedPostsCount(topUser1) - getPostedPostsCount(topUser2) : second - first;
+                    return first == second ? countPostedPosts(topUser1) - countPostedPosts(topUser2) : second - first;
                 })
                 .toList();
 
@@ -88,7 +104,7 @@ public class JpaRepositoriesService implements DBService {
         for (BotUser topUser : usersRepository.findAll()) {
             int posts = topUser.getCreatedPostsIds().size();
             int likes = getLikesSum(topUser);
-            float likesPerPosts = posts == 0 ? 0 : (float) (((int) Math.round(100.0 * likes / posts)) / 100.0);
+            float likesPerPosts = posts == 0 ? 0 : Formatter.round((float) posts / likes, 2);
 
             top.put(topUser, likesPerPosts);
         }

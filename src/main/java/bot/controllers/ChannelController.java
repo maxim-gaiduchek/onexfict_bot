@@ -10,11 +10,15 @@ public class ChannelController {
     private ChannelController() {
     }
 
-    public static void post(Post post, SimpleSender sender) {
+    public static Integer post(Post post, SimpleSender sender) {
         if (post.isNotPosted()) {
-            Controller.send(post, sender, CHANNEL_ID, "❤️ " + post.getLikesCount(), "post-like");
+            Integer postId = Controller.send(post, sender, CHANNEL_ID, "❤️ " + post.getLikesCount(), "post-like");
             post.setPosted();
+
+            return postId;
         }
+
+        return null;
     }
 
     public static void editPostLikesKeyboard(Post post, SimpleSender sender, Integer messageId) {

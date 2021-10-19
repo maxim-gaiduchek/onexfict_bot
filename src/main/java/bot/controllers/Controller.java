@@ -19,7 +19,7 @@ class Controller {
     private Controller() {
     }
 
-    static void send(Post post, SimpleSender sender, String chatId, String text, String query) {
+    static Integer send(Post post, SimpleSender sender, String chatId, String text, String query) {
         try {
             List<String> fileIds = post.getImagesFilesIds();
             Message message;
@@ -52,10 +52,16 @@ class Controller {
                 }
             }
 
-            editInlineKeyboard(post, sender, chatId, text, query, message.getMessageId());
+            Integer messageId = message.getMessageId();
+
+            editInlineKeyboard(post, sender, chatId, text, query, messageId);
+
+            return messageId;
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 
     static void editInlineKeyboard(Post post, SimpleSender sender, String chatId, String text, String query, Integer messageId) {

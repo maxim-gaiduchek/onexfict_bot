@@ -25,4 +25,10 @@ public class Formatter {
             };
         };
     }
+
+    public static float round(float number, int digits) {
+        float dec = (float) Math.pow(10, digits);
+
+        return Math.round(dec * number) / dec;
+    }
 }

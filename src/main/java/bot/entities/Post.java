@@ -5,6 +5,7 @@ import bot.datasource.converters.StringToStringList;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,6 +17,10 @@ public class Post {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @OneToOne
+    @JoinColumn(name = "creator_user_id", referencedColumnName = "chat_id")
+    private BotUser creator;
 
     @Column(name = "images_files_ids")
     @Convert(converter = StringToStringList.class)
@@ -41,13 +46,25 @@ public class Post {
     @Column(name = "is_posted")
     private boolean isPosted = false;
 
-    public Post() {
+    @Column(name = "posted")
+    @Temporal(TemporalType.DATE)
+    private Date posted;
+
+    protected Post() {
+    }
+
+    public Post(BotUser creator) {
+        this.creator = creator;
     }
 
     // getters
 
     public int getId() {
         return id;
+    }
+
+    public Long getCreatorId() {
+        return creator.getChatId();
     }
 
     public List<String> getImagesFilesIds() {
@@ -118,6 +135,7 @@ public class Post {
     }
 
     public void setPosted() {
+        posted = new Date();
         isPosted = true;
     }
 
@@ -158,6 +176,7 @@ public class Post {
     public String toString() {
         return "Post{" +
                 "id=" + id +
+                ", creator=" + creator.getChatId() +
                 ", imagesFilesIds=" + imagesFilesIds +
                 ", text='" + text + '\'' +
                 ", by='" + by + '\'' +
@@ -165,6 +184,7 @@ public class Post {
                 ", likes=" + likes +
                 ", agrees=" + agrees +
                 ", isPosted=" + isPosted +
+                ", posted=" + posted +
                 '}';
     }
 }

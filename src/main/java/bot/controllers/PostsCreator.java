@@ -6,7 +6,6 @@ import bot.entities.Post;
 import bot.utils.SimpleSender;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PostsCreator {
@@ -21,18 +20,18 @@ public class PostsCreator {
     // media
 
     public static void sendAddPhoto(SimpleSender sender, Long chatId) {
-        sender.sendStringAndRemoveKeyboard(chatId, "Скиньте мем");
+        sender.sendStringAndRemoveKeyboard(chatId, "\uD83D\uDDBC Скиньте мем");
     }
 
     public static void sendAddPhoto(SimpleSender sender, BotUser user) {
         user.setStatus(BotUser.Status.IS_ADDING_PHOTO);
-        user.setPost(new Post());
+        user.setPost(new Post(user));
         sendAddPhoto(sender, user.getChatId());
     }
 
     public static void addPhoto(SimpleSender sender, Long chatId) {
         String msg = """
-                Скиньте продолжение мема или еще один мем""";
+                🖼 Скиньте продолжение мема или еще один мем""";
 
         sender.sendStringAndKeyboard(chatId, msg, getAddPhotoKeyboard(), true);
     }
@@ -47,7 +46,7 @@ public class PostsCreator {
 
     public static void sendAddText(SimpleSender sender, Long chatId) {
         String msg = """
-                Введите текст к мему, который будет под фотками в посте""";
+                \uD83D\uDCC3 Введите текст к мему, который будет под фотками в посте""";
 
         sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
@@ -68,7 +67,7 @@ public class PostsCreator {
 
     public static void sendAddBy(SimpleSender sender, Long chatId) {
         String msg = """
-                Введите, от кого этот мем (под мемом будет отображено "by <имя>")""";
+                \uD83D\uDC65 Введите, от кого этот мем (под мемом будет отображено "by <имя>")""";
 
         sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
@@ -89,14 +88,14 @@ public class PostsCreator {
 
     public static void sendAddSource(SimpleSender sender, Long chatId) {
         String msg = """
-                Введите источник к этому мему (если надо)""";
+                🌐 Введите источник к этому мему (если надо)""";
 
         sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
 
     public static void sendSourceError(SimpleSender sender, Long chatId) {
         String msg = """
-                Ссылка должна начинаться на "https://\"""";
+                🌐 Ссылка должна начинаться на "https://\"""";
 
         sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
@@ -108,7 +107,7 @@ public class PostsCreator {
 
     public static void addSource(SimpleSender sender, BotUser user, String source) {
         String msg = """
-                    Спасибо за мемес. Его проверят админы и запостят на канал""";
+                👍 Спасибо за мемес. Его проверят админы и запостят на канал""";
 
         if (!source.equals(SKIP_ADDING_TEXT_STRING)) {
             user.getPost().setSource(source);
