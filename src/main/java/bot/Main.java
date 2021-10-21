@@ -7,6 +7,7 @@ import bot.datasource.DatasourceConfig;
 import bot.datasource.services.DBService;
 import bot.entities.BotUser;
 import bot.entities.Post;
+import bot.entities.Statistic;
 import bot.utils.Formatter;
 import bot.utils.SimpleSender;
 import org.springframework.context.ApplicationContext;
@@ -139,7 +140,7 @@ public class Main extends TelegramLongPollingBot {
             topLikesPerPostString = getTop(service.getLikesPerPostTop(user));
         } else {
             String numeral = Formatter.formatNumeralText(5 - posts, "пост", "поста", "постов");
-            topLikesPerPostString = " (надо еще " + numeral + " чтоб открылся топ)";
+            topLikesPerPostString = " (надо еще " + numeral + " для открытия топа)";
         }
 
         String msg = "\uD83D\uDCCA *Твоя статистика*\n" +
@@ -285,6 +286,7 @@ public class Main extends TelegramLongPollingBot {
         String data = text.substring(text.indexOf('_') + 1);
 
         Post post = service.getPost(Integer.parseInt(data));
+        Statistic statistic = service.getTodayStatistics();
 
         switch (query) {
             case "admin-agree" -> {
@@ -297,6 +299,8 @@ public class Main extends TelegramLongPollingBot {
                     sender.removeKeyboard(chatId, messageId);
                     sender.sendString(chatId, "Пост подтвержден " + post.getWhoHasAgreed() + " и запостен", messageId);
 
+                    statistic.incrementPosts();
+
                     if (postId != null) {
                         String msg = "[Пост](https://t.me/onexfict/" + postId + ") подтвержден и опубликован. Спасибо за поддержку❤️";
 
@@ -304,15 +308,20 @@ public class Main extends TelegramLongPollingBot {
                     }
                 }
 
-                service.savePost(post);
             }
             case "post-like" -> {
-                post.switchLike(userId);
+                if (post.switchLike(userId)) {
+                    statistic.incrementLikes();
+                } else {
+                    statistic.decrementLikes();
+                }
 
                 ChannelController.editPostLikesKeyboard(post, sender, messageId);
-                service.savePost(post);
             }
         }
+
+        service.savePost(post);
+        service.saveStatistics(statistic);
     }
 
     // keyboards
@@ -350,8 +359,9 @@ public class Main extends TelegramLongPollingBot {
             while (true) {
                 String time = TIME_FORMAT.format(new Date());
 
-                if (time.equals("22:00")) {
-                    sendAdminStats();
+                switch (time) {
+                    case "00:00" -> createNewStatisticsEntity();
+                    case "22:00" -> sendAdminStats();
                 }
 
                 try {
@@ -361,22 +371,30 @@ public class Main extends TelegramLongPollingBot {
                 }
             }
         }
+    }
 
-        private void sendAdminStats() {
-            int posts = service.countAllPostedPosts();
-            int likes = service.getAllLikesSum();
-            float likesPerPost = posts == 0 ? 0 : Formatter.round((float) likes / posts, 2);
+    private void sendAdminStats() {
+        Statistic yesterday = service.getYesterdayStatistics();
+        Statistic today = service.getTodayStatistics();
 
-            int postsToday = service.countAllTodayPostedPosts();
+        int posts = today.getPosts();
+        int likes = today.getLikes();
+        float likesPerPost = today.getLikesPerPost();
 
-            String msg = "\uD83D\uDCCA *Статистика канала*\n" +
-                    "\n" +
-                    "📃 Постов запостили: *" + posts + "* (+" + postsToday + " за сегодня)\n" +
-                    "❤️ Лайков всего: *" + likes + "*\n" +
-                    "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*";
+        int postsToday = posts - yesterday.getPosts();
+        int likesToday = likes - yesterday.getLikes();
 
-            sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
-        }
+        String msg = "\uD83D\uDCCA *Статистика канала*\n" +
+                "\n" +
+                "📃 Постов запостили: *" + posts + "* (" + (postsToday > 0 ? "+" : "") + postsToday + " за сегодня)\n" +
+                "❤️ Лайков всего: *" + likes + "* (" + (likesToday > 0 ? "+" : "") + likesToday + " за сегодня)\n" +
+                "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*";
+
+        sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
+    }
+
+    private void createNewStatisticsEntity() {
+        service.saveStatistics(new Statistic(service.getTodayStatistics()));
     }
 
     // main

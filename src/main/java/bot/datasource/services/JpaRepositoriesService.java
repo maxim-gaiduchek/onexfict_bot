@@ -1,26 +1,28 @@
 package bot.datasource.services;
 
 import bot.datasource.repositories.PostsRepository;
+import bot.datasource.repositories.StatisticsRepository;
 import bot.datasource.repositories.UsersRepository;
 import bot.entities.BotUser;
 import bot.entities.Post;
+import bot.entities.Statistic;
 import bot.utils.Formatter;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class JpaRepositoriesService implements DBService {
 
     private final UsersRepository usersRepository;
     private final PostsRepository postsRepository;
+    private final StatisticsRepository statisticsRepository;
 
-    public JpaRepositoriesService(UsersRepository usersRepository, PostsRepository postsRepository) {
+    public JpaRepositoriesService(UsersRepository usersRepository, PostsRepository postsRepository,
+                                  StatisticsRepository statisticsRepository) {
         this.usersRepository = usersRepository;
         this.postsRepository = postsRepository;
+        this.statisticsRepository = statisticsRepository;
     }
 
     // users
@@ -133,5 +135,24 @@ public class JpaRepositoriesService implements DBService {
     @Override
     public void deletePost(Post post) {
         postsRepository.delete(post);
+    }
+
+    // daily stats
+
+    @Override
+    public Statistic getTodayStatistics() {
+        return statisticsRepository.getToday();
+    }
+
+    @Override
+    public Statistic getYesterdayStatistics() {
+        Statistic today = statisticsRepository.getToday();
+
+        return statisticsRepository.getByDate(new Date(today.getDate().getTime() - 24 * 60 * 60 * 1000));
+    }
+
+    @Override
+    public void saveStatistics(Statistic statistic) {
+        statisticsRepository.save(statistic);
     }
 }

@@ -1,6 +1,7 @@
 package bot.datasource;
 
 import bot.datasource.repositories.PostsRepository;
+import bot.datasource.repositories.StatisticsRepository;
 import bot.datasource.repositories.UsersRepository;
 import bot.datasource.services.DBService;
 import bot.datasource.services.JpaRepositoriesService;
@@ -39,7 +40,8 @@ public class DatasourceConfig {
     }
 
     @Bean(name = "service")
-    public DBService service(UsersRepository usersRepository, PostsRepository postsRepository) {
-        return new JpaRepositoriesService(usersRepository, postsRepository);
+    public DBService service(UsersRepository usersRepository, PostsRepository postsRepository,
+                             StatisticsRepository statisticsRepository) {
+        return new JpaRepositoriesService(usersRepository, postsRepository, statisticsRepository);
     }
 }

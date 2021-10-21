@@ -2,6 +2,7 @@ package bot.datasource.services;
 
 import bot.entities.Post;
 import bot.entities.BotUser;
+import bot.entities.Statistic;
 
 import java.util.List;
 
@@ -36,4 +37,12 @@ public interface DBService {
     void savePost(Post post);
 
     void deletePost(Post post);
+
+    // daily stats
+
+    Statistic getTodayStatistics();
+
+    Statistic getYesterdayStatistics();
+
+    void saveStatistics(Statistic statistic);
 }

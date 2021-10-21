@@ -118,11 +118,15 @@ public class Post {
         this.source = source;
     }
 
-    public void switchLike(Integer userId) {
+    public boolean switchLike(Integer userId) {
         if (likes.contains(userId)) {
             likes.remove(userId);
+
+            return false;
         } else {
             likes.add(userId);
+
+            return true;
         }
     }
 
