@@ -63,6 +63,8 @@ public class Main extends TelegramLongPollingBot {
     // message parsing
 
     private void parseMessage(Message message) {
+        Long chatId = message.getChatId();
+
         if (message.isUserMessage()) {
             if (message.isCommand()) {
                 parseCommand(message);
@@ -73,9 +75,13 @@ public class Main extends TelegramLongPollingBot {
             } else {
                 sender.deleteMessage(message.getChatId(), message.getMessageId());
             }
+        } else if (message.isGroupMessage()) {
+            if (chatId.toString().equals(AdminController.ADMIN_CHAT_ID)) {
+                parseAdminMessage(message);
+            } else {
+                sender.leaveChat(chatId);
+            }
         } else if (message.getNewChatMembers() != null) {
-            Long chatId = message.getChatId();
-
             if (!chatId.toString().equals(AdminController.ADMIN_CHAT_ID)) {
                 sender.leaveChat(chatId);
             }
@@ -357,6 +363,38 @@ public class Main extends TelegramLongPollingBot {
         return getTwoRowsKeyboard(STATS_STRING, CREATE_POST_STRING);
     }
 
+    // admin message parsing
+
+    private void parseAdminMessage(Message message) {
+        if (message.isCommand()) {
+            String command = message.getText();
+
+            if (command.equals("/stats") || command.equals("/stats@" + BOT_USERNAME)) {
+                sendAdminStats();
+            }
+        }
+    }
+
+    private void sendAdminStats() {
+        Statistic yesterday = service.getYesterdayStatistics();
+        Statistic today = service.getTodayStatistics();
+
+        int posts = today.getPosts();
+        int likes = today.getLikes();
+        float likesPerPost = today.getLikesPerPost();
+
+        int postsToday = posts - yesterday.getPosts();
+        int likesToday = likes - yesterday.getLikes();
+
+        String msg = "\uD83D\uDCCA *Статистика канала*\n" +
+                "\n" +
+                "📃 Постов запостили: *" + posts + "* (" + (postsToday > 0 ? "+" : "") + postsToday + " за сегодня)\n" +
+                "❤️ Лайков всего: *" + likes + "* (" + (likesToday > 0 ? "+" : "") + likesToday + " за сегодня)\n" +
+                "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*";
+
+        sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
+    }
+
     // executor
 
     private class Executor extends Thread {
@@ -384,26 +422,6 @@ public class Main extends TelegramLongPollingBot {
                 }
             }
         }
-    }
-
-    private void sendAdminStats() {
-        Statistic yesterday = service.getYesterdayStatistics();
-        Statistic today = service.getTodayStatistics();
-
-        int posts = today.getPosts();
-        int likes = today.getLikes();
-        float likesPerPost = today.getLikesPerPost();
-
-        int postsToday = posts - yesterday.getPosts();
-        int likesToday = likes - yesterday.getLikes();
-
-        String msg = "\uD83D\uDCCA *Статистика канала*\n" +
-                "\n" +
-                "📃 Постов запостили: *" + posts + "* (" + (postsToday > 0 ? "+" : "") + postsToday + " за сегодня)\n" +
-                "❤️ Лайков всего: *" + likes + "* (" + (likesToday > 0 ? "+" : "") + likesToday + " за сегодня)\n" +
-                "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*";
-
-        sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
     }
 
     private void createNewStatisticsEntity() {
