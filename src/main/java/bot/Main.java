@@ -425,7 +425,7 @@ public class Main extends TelegramLongPollingBot {
     }
 
     private void createNewStatisticsEntity() {
-        service.saveStatistics(new Statistic(service.getTodayStatistics()));
+        service.saveStatistics(new Statistic(service.getYesterdayStatistics()));
     }
 
     // main
