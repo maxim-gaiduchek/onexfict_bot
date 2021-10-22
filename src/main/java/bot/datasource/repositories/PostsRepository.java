@@ -11,10 +11,4 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT COUNT(post) FROM Post post WHERE post.isPosted = TRUE  AND post.creator = ?1")
     int countAllByCreatorAndPosted(BotUser user);
-
-    @Query("SELECT COUNT(post) FROM Post post WHERE post.isPosted = TRUE")
-    int countAllByPosted();
-
-    @Query("SELECT COUNT(post) FROM Post post WHERE post.isPosted = TRUE AND post.posted = CURRENT_DATE")
-    int countAllTodayPostedPosts();
 }

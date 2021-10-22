@@ -44,19 +44,28 @@ public class JpaRepositoriesService implements DBService {
         usersRepository.save(user);
     }
 
+    // posts
+
+    @Override
+    public Post getPost(Integer id) {
+        return postsRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void savePost(Post post) {
+        postsRepository.save(post);
+    }
+
+    @Override
+    public void deletePost(Post post) {
+        postsRepository.delete(post);
+    }
+
+    // stats
+
     @Override
     public int countPostedPosts(BotUser user) {
         return postsRepository.countAllByCreatorAndPosted(user);
-    }
-
-    @Override
-    public int countAllPostedPosts() {
-        return postsRepository.countAllByPosted();
-    }
-
-    @Override
-    public int countAllTodayPostedPosts() {
-        return postsRepository.countAllTodayPostedPosts();
     }
 
     @Override
@@ -80,13 +89,6 @@ public class JpaRepositoriesService implements DBService {
     }
 
     @Override
-    public int getAllLikesSum() {
-        return postsRepository.findAll().stream()
-                .mapToInt(Post::getLikesCount)
-                .sum();
-    }
-
-    @Override
     public int getLikesTop(BotUser user) {
         List<BotUser> top = usersRepository.findAll().stream()
                 .sorted((topUser1, topUser2) -> {
@@ -100,47 +102,64 @@ public class JpaRepositoriesService implements DBService {
     }
 
     @Override
+    public float getLikesPerPost(BotUser user) {
+        List<Post> posts = postsRepository.findAllById(user.getCreatedPostsIds());
+
+        int postsCount = posts.size();
+        int likes = posts.stream().mapToInt(Post::getLikesCount).sum();
+
+        return postsCount == 0 ? 0 : Formatter.round((float) likes / postsCount, 2);
+    }
+
+    @Override
     public int getLikesPerPostTop(BotUser user) {
-        Map<BotUser, Float> top = new HashMap<>();
-
-        for (BotUser topUser : usersRepository.findAll()) {
-            List<Post> posts = postsRepository.findAllById(topUser.getCreatedPostsIds()).stream()
-                    .sorted(Comparator.comparing(post -> -post.getId()))
-                    .limit(10)
-                    .toList();
-
-            int postsCount = posts.size();
-            int likes = posts.stream().mapToInt(Post::getLikesCount).sum();
-
-            float likesPerPosts = postsCount == 0 ? 0 : Formatter.round((float) likes / postsCount, 2);
-
-            top.put(topUser, likesPerPosts);
-        }
-
-        List<BotUser> topUsers = top.entrySet().stream()
-                .filter(entry -> entry.getKey().getCreatedPostsIds().size() >= 5)
-                .sorted(Comparator.comparing(entry -> -entry.getValue()))
-                .map(Map.Entry::getKey)
+        List<BotUser> top = usersRepository.findAll().stream()
+                .filter(topUser -> topUser.getCreatedPostsIds().size() >= 5)
+                .sorted(Comparator.comparing(topUser -> -getLikesPerPost(topUser)))
                 .toList();
 
-        return topUsers.indexOf(user) + 1;
+        return top.indexOf(user) + 1;
     }
 
-    // posts
-
-    @Override
-    public Post getPost(Integer id) {
-        return postsRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public void savePost(Post post) {
-        postsRepository.save(post);
+    private List<Post> get10LastPosts(BotUser user) {
+        return postsRepository.findAllById(user.getCreatedPostsIds()).stream()
+                .sorted(Comparator.comparing(post -> -post.getId()))
+                .limit(10)
+                .toList();
     }
 
     @Override
-    public void deletePost(Post post) {
-        postsRepository.delete(post);
+    public int get10LastPostsLikesSum(BotUser user) {
+        return get10LastPosts(user).stream().mapToInt(Post::getLikesCount).sum();
+    }
+
+    @Override
+    public int get10LastPostsLikesTop(BotUser user) {
+        List<BotUser> top = usersRepository.findAll().stream()
+                .sorted(Comparator.comparing(topUser -> -get10LastPostsLikesSum(topUser)))
+                .toList();
+
+        return top.indexOf(user) + 1;
+    }
+
+    @Override
+    public float get10LastPostsLikesPerPost(BotUser user) {
+        List<Post> posts = get10LastPosts(user);
+
+        int postsCount = posts.size();
+        int likes = posts.stream().mapToInt(Post::getLikesCount).sum();
+
+        return postsCount == 0 ? 0 : Formatter.round((float) likes / postsCount, 2);
+    }
+
+    @Override
+    public int get10LastPostsLikesPerPostTop(BotUser user) {
+        List<BotUser> top = usersRepository.findAll().stream()
+                .filter(topUser -> topUser.getCreatedPostsIds().size() >= 5)
+                .sorted(Comparator.comparing(topUser -> -get10LastPostsLikesPerPost(topUser)))
+                .toList();
+
+        return top.indexOf(user) + 1;
     }
 
     // daily stats

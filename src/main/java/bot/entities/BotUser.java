@@ -83,17 +83,12 @@ public class BotUser {
 
         BotUser botUser = (BotUser) o;
 
-        if (chatId != botUser.chatId) return false;
-        if (status != botUser.status) return false;
-        return Objects.equals(post, botUser.post);
+        return chatId == botUser.chatId;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (chatId ^ (chatId >>> 32));
-        result = 31 * result + status.hashCode();
-        result = 31 * result + (post != null ? post.hashCode() : 0);
-        return result;
+        return (int) (chatId ^ (chatId >>> 32));
     }
 
     @Override

@@ -14,22 +14,6 @@ public interface DBService {
 
     void saveUser(BotUser user);
 
-    int countPostedPosts(BotUser user);
-
-    int countAllPostedPosts();
-
-    int countAllTodayPostedPosts();
-
-    int getPostedPostsTop(BotUser user);
-
-    int getLikesSum(BotUser user);
-
-    int getAllLikesSum();
-
-    int getLikesTop(BotUser user);
-
-    int getLikesPerPostTop(BotUser user);
-
     // posts
 
     Post getPost(Integer id);
@@ -37,6 +21,28 @@ public interface DBService {
     void savePost(Post post);
 
     void deletePost(Post post);
+
+    // stats
+
+    int countPostedPosts(BotUser user);
+
+    int getPostedPostsTop(BotUser user);
+
+    int getLikesSum(BotUser user);
+
+    int getLikesTop(BotUser user);
+
+    float getLikesPerPost(BotUser user);
+
+    int getLikesPerPostTop(BotUser user);
+
+    int get10LastPostsLikesSum(BotUser user);
+
+    int get10LastPostsLikesTop(BotUser user);
+
+    float get10LastPostsLikesPerPost(BotUser user);
+
+    int get10LastPostsLikesPerPostTop(BotUser user);
 
     // daily stats
 

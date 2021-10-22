@@ -128,26 +128,39 @@ public class Main extends TelegramLongPollingBot {
     private void statsCommand(Long chatId) {
         BotUser user = service.getUser(chatId);
 
-        int posts = user.getCreatedPostsIds().size();
-        int likes = service.getLikesSum(user);
-        float likesPerPost = posts == 0 ? 0 : Formatter.round((float) likes / posts, 2);
+        int allPosts = user.getCreatedPostsIds().size();
+        int allLikes = service.getLikesSum(user);
+        float allLikesPerPost = service.getLikesPerPost(user);
 
-        String topPostsString = getTop(service.getPostedPostsTop(user));
-        String topLikesString = getTop(service.getLikesTop(user));
-        String topLikesPerPostString;
+        int lastLikes = service.get10LastPostsLikesSum(user);
+        float lastLikesPerPost = service.get10LastPostsLikesPerPost(user);
 
-        if (posts >= 5) {
-            topLikesPerPostString = getTop(service.getLikesPerPostTop(user));
+        String allTopPostsString = getTop(service.getPostedPostsTop(user));
+        String allTopLikesString = getTop(service.getLikesTop(user));
+        String allTopLikesPerPostString;
+
+        String lastTopLikesString = getTop(service.get10LastPostsLikesTop(user));
+        String lastTopLikesPerPostString;
+
+        if (allPosts >= 5) {
+            allTopLikesPerPostString = getTop(service.getLikesPerPostTop(user));
+            lastTopLikesPerPostString = getTop(service.get10LastPostsLikesPerPostTop(user));
         } else {
-            String numeral = Formatter.formatNumeralText(5 - posts, "пост", "поста", "постов");
-            topLikesPerPostString = " (надо еще " + numeral + " для открытия топа)";
+            String numeral = Formatter.formatNumeralText(5 - allPosts, "пост", "поста", "постов");
+            allTopLikesPerPostString = " (надо еще " + numeral + " для открытия топа)";
+            lastTopLikesPerPostString = " (надо еще " + numeral + " для открытия топа)";
         }
 
-        String msg = "\uD83D\uDCCA *Твоя статистика*\n" +
+        String msg = "\uD83D\uDCCA *Твоя общая статистика*\n" +
                 "\n" +
-                "📃 Постов запостили: *" + posts + "*" + topPostsString + "\n" +
-                "❤️ Лайков всего: *" + likes + "*" + topLikesString + "\n" +
-                "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*" + topLikesPerPostString;
+                "📃 Постов запостили: *" + allPosts + "*" + allTopPostsString + "\n" +
+                "❤️ Лайков всего: *" + allLikes + "*" + allTopLikesString + "\n" +
+                "\uD83D\uDC65 Лайков за пост в среднем: *" + allLikesPerPost + "*" + allTopLikesPerPostString + "\n" +
+                "\n" +
+                "\uD83D\uDCCA *Твоя статистика за 10 последних постов*\n" +
+                "\n" +
+                "❤️ Лайков: *" + lastLikes + "*" + lastTopLikesString + "\n" +
+                "\uD83D\uDC65 Лайков за пост в среднем: *" + lastLikesPerPost + "*" + lastTopLikesPerPostString;
 
         sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
