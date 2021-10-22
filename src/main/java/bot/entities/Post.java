@@ -18,9 +18,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
-    @JoinColumn(name = "creator_user_id", referencedColumnName = "chat_id")
-    private BotUser creator;
+    @Column(name = "creator_user_id")
+    private Long creatorChatId;
 
     @Column(name = "images_files_ids")
     @Convert(converter = StringToStringList.class)
@@ -54,7 +53,7 @@ public class Post {
     }
 
     public Post(BotUser creator) {
-        this.creator = creator;
+        creatorChatId = creator.getChatId();
     }
 
     // getters
@@ -64,7 +63,7 @@ public class Post {
     }
 
     public Long getCreatorId() {
-        return creator.getChatId();
+        return creatorChatId;
     }
 
     public List<String> getImagesFilesIds() {
@@ -180,7 +179,7 @@ public class Post {
     public String toString() {
         return "Post{" +
                 "id=" + id +
-                ", creator=" + creator.getChatId() +
+                ", creatorChatId=" + creatorChatId +
                 ", imagesFilesIds=" + imagesFilesIds +
                 ", text='" + text + '\'' +
                 ", by='" + by + '\'' +
