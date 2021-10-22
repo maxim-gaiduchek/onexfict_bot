@@ -65,7 +65,7 @@ public class JpaRepositoriesService implements DBService {
 
     @Override
     public int countPostedPosts(BotUser user) {
-        return postsRepository.countAllByCreatorAndPosted(user);
+        return postsRepository.countAllByCreatorAndPosted(user.getChatId());
     }
 
     @Override
