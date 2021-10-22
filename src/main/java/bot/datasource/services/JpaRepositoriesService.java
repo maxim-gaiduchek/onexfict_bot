@@ -104,9 +104,15 @@ public class JpaRepositoriesService implements DBService {
         Map<BotUser, Float> top = new HashMap<>();
 
         for (BotUser topUser : usersRepository.findAll()) {
-            int posts = topUser.getCreatedPostsIds().size();
-            int likes = getLikesSum(topUser);
-            float likesPerPosts = posts == 0 ? 0 : Formatter.round((float) likes / posts, 2);
+            List<Post> posts = postsRepository.findAllById(topUser.getCreatedPostsIds()).stream()
+                    .sorted(Comparator.comparing(post -> -post.getId()))
+                    .limit(10)
+                    .toList();
+
+            int postsCount = posts.size();
+            int likes = posts.stream().mapToInt(Post::getLikesCount).sum();
+
+            float likesPerPosts = postsCount == 0 ? 0 : Formatter.round((float) likes / postsCount, 2);
 
             top.put(topUser, likesPerPosts);
         }

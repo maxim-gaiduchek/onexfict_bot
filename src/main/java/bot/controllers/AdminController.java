@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 public class AdminController {
 
     public static final String ADMIN_CHAT_ID = "-1001523866129";
-    public static final int ADMIN_LIKES = 3;
+    public static final int ADMIN_LIKES = 4;
 
     private AdminController() {
     }
