@@ -14,7 +14,7 @@ public class Statistic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "record_date")
+    @Column(name = "record_date") // TODO: 25.10.2021 fix that bug
     @Temporal(TemporalType.DATE)
     private Date date = new Date();
 
