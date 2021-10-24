@@ -329,10 +329,15 @@ public class Main extends TelegramLongPollingBot {
 
             }
             case "post-like" -> {
-                if (post.switchLike(userId)) {
-                    statistic.incrementLikes();
-                } else {
-                    statistic.decrementLikes();
+                try {
+                    if (post.switchLike(userId)) {
+                        statistic.incrementLikes();
+                    } else {
+                        statistic.decrementLikes();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    sender.sendString(AdminController.ADMIN_CHAT_ID, e.getMessage());
                 }
 
                 ChannelController.editPostLikesKeyboard(post, sender, messageId);
@@ -340,7 +345,7 @@ public class Main extends TelegramLongPollingBot {
         }
 
         service.savePost(post);
-        service.saveStatistics(statistic);
+        if (statistic != null) service.saveStatistics(statistic);
     }
 
     // keyboards
@@ -425,7 +430,15 @@ public class Main extends TelegramLongPollingBot {
     }
 
     private void createNewStatisticsEntity() {
-        service.saveStatistics(new Statistic(service.getYesterdayStatistics()));
+        try {
+            service.saveStatistics(new Statistic(service.getYesterdayStatistics()));
+            sender.sendString(AdminController.ADMIN_CHAT_ID, "Statistics reset has done");
+            sender.sendString(AdminController.ADMIN_CHAT_ID, service.getYesterdayStatistics().toString());
+            sender.sendString(AdminController.ADMIN_CHAT_ID, service.getTodayStatistics().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            sender.sendString(AdminController.ADMIN_CHAT_ID, e.getMessage());
+        }
     }
 
     // main
