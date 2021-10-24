@@ -10,11 +10,11 @@ import java.util.Date;
 public class Statistic {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "date")
+    @Column(name = "record_date")
     @Temporal(TemporalType.DATE)
     private Date date = new Date();
 
