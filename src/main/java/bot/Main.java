@@ -300,11 +300,11 @@ public class Main extends TelegramLongPollingBot {
         Integer messageId = message.getMessageId();
         Integer userId = callbackQuery.getFrom().getId();
 
-        String text = callbackQuery.getData();
-        String query = text.substring(0, text.indexOf('_'));
-        String data = text.substring(text.indexOf('_') + 1);
+        String data = callbackQuery.getData();
+        String query = data.substring(0, data.indexOf('_'));
+        String text = data.substring(data.indexOf('_') + 1);
 
-        Post post = service.getPost(Integer.parseInt(data));
+        Post post = service.getPost(Integer.parseInt(text));
         Statistic statistic = service.getTodayStatistics();
 
         switch (query) {
@@ -399,7 +399,7 @@ public class Main extends TelegramLongPollingBot {
                 "❤️ Лайков всего: *" + likes + "* (" + (likesToday > 0 ? "+" : "") + likesToday + " за сегодня)\n" +
                 "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*\n" +
                 "\n" +
-                "#статистика_канала";
+                "\\#статистика_канала";
 
         sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
     }
