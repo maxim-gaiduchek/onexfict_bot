@@ -399,7 +399,7 @@ public class Main extends TelegramLongPollingBot {
                 "❤️ Лайков всего: *" + likes + "* (" + (likesToday > 0 ? "+" : "") + likesToday + " за сегодня)\n" +
                 "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*\n" +
                 "\n" +
-                "\\#статистика_канала";
+                "#статистика\\_канала";
 
         sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
     }
