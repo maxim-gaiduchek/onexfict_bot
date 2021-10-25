@@ -345,7 +345,9 @@ public class Main extends TelegramLongPollingBot {
         }
 
         service.savePost(post);
-        if (statistic != null) service.saveStatistics(statistic);
+        if (statistic != null) {
+            service.saveStatistics(statistic);
+        }
     }
 
     // keyboards
@@ -395,7 +397,9 @@ public class Main extends TelegramLongPollingBot {
                 "\n" +
                 "📃 Постов запостили: *" + posts + "* (" + (postsToday > 0 ? "+" : "") + postsToday + " за сегодня)\n" +
                 "❤️ Лайков всего: *" + likes + "* (" + (likesToday > 0 ? "+" : "") + likesToday + " за сегодня)\n" +
-                "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*";
+                "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*\n" +
+                "\n" +
+                "#статистика_канала";
 
         sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
     }
@@ -409,6 +413,8 @@ public class Main extends TelegramLongPollingBot {
         static {
             TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+3"));
         }
+
+        private Executor() {}
 
         @Override
         public void run() {

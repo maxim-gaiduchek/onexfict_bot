@@ -118,15 +118,13 @@ public class Post {
     }
 
     public boolean switchLike(Integer userId) {
-        if (likes.contains(userId)) {
-            likes.remove(userId);
-
-            return false;
-        } else {
+        if (!likes.remove(userId)) {
             likes.add(userId);
 
             return true;
         }
+
+        return false;
     }
 
     public void switchAgree(Integer userId) {
