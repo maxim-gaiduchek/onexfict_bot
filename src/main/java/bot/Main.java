@@ -340,7 +340,9 @@ public class Main extends TelegramLongPollingBot {
                     sender.sendString(AdminController.ADMIN_CHAT_ID, e.getMessage());
                 }
 
+                long time = System.currentTimeMillis();
                 ChannelController.editPostLikesKeyboard(post, sender, messageId);
+                System.out.println(System.currentTimeMillis() - time);
             }
         }
 
