@@ -2,6 +2,7 @@ package bot.entities;
 
 import bot.datasource.converters.StringToIntList;
 import bot.datasource.converters.StringToStringList;
+import bot.utils.Formatter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class Post {
     }
 
     public String getPostText() {
-        return (text != null ? (text + "\n\n") : "") +
+        return (text != null ? Formatter.formatTelegramText(text + "\n\n") : "") +
                 (by != null ? ("by " + by + "\n\n") : "") +
                 (source != null ? ("[источник](" + source + ")\n\n") : "") +
                 "@onexfict";

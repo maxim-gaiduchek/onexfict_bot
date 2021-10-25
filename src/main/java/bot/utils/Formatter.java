@@ -8,6 +8,7 @@ public class Formatter {
     public static String formatTelegramText(String text) {
         return text.replace("*", "\\*")
                 .replace("_", "\\_")
+                .replace("-", "\\-")
                 .replace("~", "\\~")
                 .replace("`", "\\`")
                 .replace("[", "\\[");
