@@ -21,6 +21,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -443,7 +445,15 @@ public class Main extends TelegramLongPollingBot {
             sender.sendString(AdminController.ADMIN_CHAT_ID, service.getTodayStatistics().toString());
         } catch (Exception e) {
             e.printStackTrace();
-            sender.sendString(AdminController.ADMIN_CHAT_ID, e.getMessage());
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            PrintWriter pw = new PrintWriter(outputStream);
+
+            e.printStackTrace(pw);
+
+            sender.sendString(AdminController.ADMIN_CHAT_ID, outputStream.toString());
+
+            pw.close();
         }
     }
 
