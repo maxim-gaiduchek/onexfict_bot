@@ -128,12 +128,14 @@ public class Post {
         return false;
     }
 
-    public void switchAgree(Integer userId) {
-        if (agrees.contains(userId)) {
-            agrees.remove(userId);
-        } else {
+    public boolean switchAgree(Integer userId) {
+        if (!agrees.remove(userId)) {
             agrees.add(userId);
+
+            return true;
         }
+
+        return false;
     }
 
     public void setPosted() {

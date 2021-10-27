@@ -3,6 +3,7 @@ package bot.utils;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.methods.ActionType;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.KickChatMember;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.LeaveChat;
@@ -863,6 +864,28 @@ public class SimpleSender extends DefaultAbsSender {
         return answerInlineQuery(id, Arrays.asList(results));
     }
 
+    // callback answer
+
+    public Serializable answerCallbackQuery(String callbackQueryId, String text) {
+        return answerCallbackQuery(callbackQueryId, text, false);
+    }
+
+    public Serializable answerCallbackQuery(String callbackQueryId, String text, boolean showAlert) {
+        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+
+        answerCallbackQuery.setCallbackQueryId(callbackQueryId);
+        answerCallbackQuery.setText(text);
+        answerCallbackQuery.setShowAlert(showAlert);
+
+        try {
+            return execute(answerCallbackQuery);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     // inline keyboard buttons
 
     public static InlineKeyboardButton getInlineKeyboardButtonWithCallbackData(String text, String callbackData) {
@@ -904,6 +927,7 @@ public class SimpleSender extends DefaultAbsSender {
 
     // token
 
+    @Override
     public String getBotToken() {
         return TOKEN;
     }

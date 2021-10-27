@@ -297,6 +297,7 @@ public class Main extends TelegramLongPollingBot {
     // parse callback query
 
     private void parseCallbackQuery(CallbackQuery callbackQuery) {
+        String callbackQueryId = callbackQuery.getId();
         Message message = callbackQuery.getMessage();
         Long chatId = message.getChatId();
         Integer messageId = message.getMessageId();
@@ -311,7 +312,11 @@ public class Main extends TelegramLongPollingBot {
 
         switch (query) {
             case "admin-agree" -> {
-                post.switchAgree(userId);
+                if (post.switchAgree(userId)) {
+                    sender.answerCallbackQuery(callbackQueryId, "Вы одобрили пост 👍");
+                } else {
+                    sender.answerCallbackQuery(callbackQueryId, "Вы убрали одобрение поста 👎");
+                }
 
                 AdminController.editAdminAgreeKeyboard(post, sender, messageId);
                 if (post.getAgreesCount() >= AdminController.ADMIN_LIKES) {
@@ -333,8 +338,10 @@ public class Main extends TelegramLongPollingBot {
             case "post-like" -> {
                 try {
                     if (post.switchLike(userId)) {
+                        sender.answerCallbackQuery(callbackQueryId, "Вы поставили лайк ❤️");
                         statistic.incrementLikes();
                     } else {
+                        sender.answerCallbackQuery(callbackQueryId, "Вы убрали лайк поста 😔");
                         statistic.decrementLikes();
                     }
                 } catch (Exception e) {
@@ -445,15 +452,7 @@ public class Main extends TelegramLongPollingBot {
             sender.sendString(AdminController.ADMIN_CHAT_ID, service.getTodayStatistics().toString());
         } catch (Exception e) {
             e.printStackTrace();
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            PrintWriter pw = new PrintWriter(outputStream);
-
-            e.printStackTrace(pw);
-
-            sender.sendString(AdminController.ADMIN_CHAT_ID, outputStream.toString());
-
-            pw.close();
+            sender.sendString(AdminController.ADMIN_CHAT_ID, e.getMessage());
         }
     }
 
