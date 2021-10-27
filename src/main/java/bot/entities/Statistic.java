@@ -14,7 +14,7 @@ public class Statistic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "record_date") // TODO: 25.10.2021 fix that bug
+    @Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
 
@@ -28,8 +28,6 @@ public class Statistic {
     }
 
     public Statistic(Statistic old) {
-        date = new Date();
-
         posts = old.posts;
         likes = old.likes;
     }
