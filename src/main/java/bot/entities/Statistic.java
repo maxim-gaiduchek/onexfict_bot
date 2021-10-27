@@ -16,7 +16,7 @@ public class Statistic {
 
     @Column(name = "record_date") // TODO: 25.10.2021 fix that bug
     @Temporal(TemporalType.DATE)
-    private Date date = new Date();
+    private Date date;
 
     @Column(name = "posts")
     private int posts;
@@ -28,6 +28,8 @@ public class Statistic {
     }
 
     public Statistic(Statistic old) {
+        date = new Date();
+
         posts = old.posts;
         likes = old.likes;
     }
