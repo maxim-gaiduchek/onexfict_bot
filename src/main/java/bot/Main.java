@@ -431,7 +431,7 @@ public class Main extends TelegramLongPollingBot {
                 String time = TIME_FORMAT.format(new Date());
 
                 switch (time) {
-                    case "00:00", "00:10" -> createNewStatisticsEntity();
+                    case "00:00", "00:15" -> createNewStatisticsEntity();
                     case "22:00" -> sendAdminStats();
                 }
 

@@ -16,7 +16,7 @@ public class Statistic {
 
     @Column(name = "date")
     @Temporal(TemporalType.DATE)
-    private Date date;
+    private Date date = new Date();
 
     @Column(name = "posts")
     private int posts;
