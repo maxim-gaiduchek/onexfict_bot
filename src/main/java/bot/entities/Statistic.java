@@ -16,7 +16,7 @@ public class Statistic {
 
     @Column(name = "date")
     @Temporal(TemporalType.DATE)
-    private Date date = new Date();
+    private Date date = new Date(new Date().getTime() + 3 * 60 * 60 * 1000);
 
     @Column(name = "posts")
     private int posts;
