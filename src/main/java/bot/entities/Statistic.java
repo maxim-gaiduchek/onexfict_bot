@@ -52,16 +52,12 @@ public class Statistic {
 
     // setters
 
-    public void incrementPosts() {
-        posts++;
+    public void setPosts(int posts) {
+        this.posts = posts;
     }
 
-    public void incrementLikes() {
-        likes++;
-    }
-
-    public void decrementLikes() {
-        likes--;
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     // core

@@ -46,9 +46,13 @@ public interface DBService {
 
     // daily stats
 
+    void createNewStatisticsEntity();
+
     Statistic getTodayStatistics();
 
     Statistic getYesterdayStatistics();
 
     void saveStatistics(Statistic statistic);
+
+    void updateStatistics();
 }

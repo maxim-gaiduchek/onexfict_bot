@@ -308,7 +308,6 @@ public class Main extends TelegramLongPollingBot {
         String text = data.substring(data.indexOf('_') + 1);
 
         Post post = service.getPost(Integer.parseInt(text));
-        Statistic statistic = service.getTodayStatistics();
 
         switch (query) {
             case "admin-agree" -> {
@@ -325,8 +324,6 @@ public class Main extends TelegramLongPollingBot {
                     sender.removeKeyboard(chatId, messageId);
                     sender.sendString(chatId, "Пост подтвержден " + post.getWhoHasAgreed() + " и запостен", messageId);
 
-                    statistic.incrementPosts();
-
                     if (postId != null) {
                         String msg = "[Пост](https://t.me/onexfict/" + postId + ") подтвержден и опубликован. Спасибо за поддержку❤️";
 
@@ -336,17 +333,10 @@ public class Main extends TelegramLongPollingBot {
 
             }
             case "post-like" -> {
-                try {
-                    if (post.switchLike(userId)) {
-                        sender.answerCallbackQuery(callbackQueryId, "Вы поставили лайк ❤️");
-                        statistic.incrementLikes();
-                    } else {
-                        sender.answerCallbackQuery(callbackQueryId, "Вы убрали лайк поста 😔");
-                        statistic.decrementLikes();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    sender.sendString(AdminController.ADMIN_CHAT_ID, e.getMessage());
+                if (post.switchLike(userId)) {
+                    sender.answerCallbackQuery(callbackQueryId, "Вы поставили лайк ❤️");
+                } else {
+                    sender.answerCallbackQuery(callbackQueryId, "Вы убрали лайк поста 😔");
                 }
 
                 ChannelController.editPostLikesKeyboard(post, sender, messageId);
@@ -354,9 +344,6 @@ public class Main extends TelegramLongPollingBot {
         }
 
         service.savePost(post);
-        if (statistic != null) {
-            service.saveStatistics(statistic);
-        }
     }
 
     // keyboards
@@ -402,13 +389,17 @@ public class Main extends TelegramLongPollingBot {
         int postsToday = posts - yesterday.getPosts();
         int likesToday = likes - yesterday.getLikes();
 
+        DateFormat format = new SimpleDateFormat("_На состояние dd.MM.yyyy HH:mm_");
+
+        format.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+
         String msg = "\uD83D\uDCCA *Статистика канала*\n" +
                 "\n" +
                 "📃 Постов запостили: *" + posts + "* (" + (postsToday > 0 ? "+" : "") + postsToday + " за сегодня)\n" +
                 "❤️ Лайков всего: *" + likes + "* (" + (likesToday > 0 ? "+" : "") + likesToday + " за сегодня)\n" +
                 "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*\n" +
                 "\n" +
-                "#статистика\\_канала";
+                format.format(new Date());
 
         sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
     }
@@ -420,7 +411,7 @@ public class Main extends TelegramLongPollingBot {
         private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
 
         static {
-            TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+3"));
+            TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+2"));
         }
 
         private Executor() {}
@@ -431,8 +422,9 @@ public class Main extends TelegramLongPollingBot {
                 String time = TIME_FORMAT.format(new Date());
 
                 switch (time) {
-                    case "00:00", "00:15" -> createNewStatisticsEntity();
+                    case "00:00" -> createNewStatisticsEntity();
                     case "22:00" -> sendAdminStats();
+                    default -> service.updateStatistics();
                 }
 
                 try {
@@ -446,7 +438,8 @@ public class Main extends TelegramLongPollingBot {
 
     private void createNewStatisticsEntity() {
         try {
-            service.saveStatistics(new Statistic(service.getYesterdayStatistics()));
+            service.createNewStatisticsEntity();
+
             sender.sendString(AdminController.ADMIN_CHAT_ID, "Statistics reset has done");
             sender.sendString(AdminController.ADMIN_CHAT_ID, service.getYesterdayStatistics().toString());
             sender.sendString(AdminController.ADMIN_CHAT_ID, service.getTodayStatistics().toString());

@@ -165,6 +165,11 @@ public class JpaRepositoriesService implements DBService {
     // daily stats
 
     @Override
+    public void createNewStatisticsEntity() {
+        saveStatistics(new Statistic(getYesterdayStatistics()));
+    }
+
+    @Override
     public Statistic getTodayStatistics() {
         return statisticsRepository.getToday();
     }
@@ -177,5 +182,16 @@ public class JpaRepositoriesService implements DBService {
     @Override
     public void saveStatistics(Statistic statistic) {
         statisticsRepository.save(statistic);
+    }
+
+    @Override
+    public void updateStatistics() {
+        Statistic statistic = statisticsRepository.getToday();
+        List<Post> posts = postsRepository.getAllPosted();
+
+        statistic.setPosts(posts.size());
+        statistic.setLikes(posts.stream().mapToInt(Post::getLikesCount).sum());
+
+        saveStatistics(statistic);
     }
 }
