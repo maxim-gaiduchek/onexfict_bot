@@ -333,13 +333,17 @@ public class Main extends TelegramLongPollingBot {
 
             }
             case "post-like" -> {
-                if (post.switchLike(userId)) {
-                    sender.answerCallbackQuery(callbackQueryId, "Вы поставили лайк ❤️");
-                } else {
-                    sender.answerCallbackQuery(callbackQueryId, "Вы убрали лайк поста 😔");
-                }
+                boolean hasLiked = post.switchLike(userId);
 
                 ChannelController.editPostLikesKeyboard(post, sender, messageId);
+
+                new Thread(() -> {
+                    if (hasLiked) {
+                        sender.answerCallbackQuery(callbackQueryId, "Вы поставили лайк ❤️");
+                    } else {
+                        sender.answerCallbackQuery(callbackQueryId, "Вы убрали лайк поста 😔");
+                    }
+                }).start();
             }
         }
 
