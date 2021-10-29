@@ -177,6 +177,9 @@ public class JpaRepositoriesService implements DBService {
 
     @Override
     public Statistic getTodayStatistics() {
+        System.out.println(new Date());
+        System.out.println(new Date(new Date().getTime() + 3 * 60 * 60 * 1000));
+
         return statisticsRepository.getByDate(new Date(new Date().getTime() + 3 * 60 * 60 * 1000));
     }
 
@@ -192,7 +195,7 @@ public class JpaRepositoriesService implements DBService {
 
     @Override
     public void updateStatistics() {
-        Statistic statistic = statisticsRepository.getToday();
+        Statistic statistic = getTodayStatistics();
         List<Post> posts = postsRepository.getAllPosted();
 
         statistic.setPosts(posts.size());
