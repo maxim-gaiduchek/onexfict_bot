@@ -4,6 +4,10 @@ import bot.entities.Post;
 import bot.utils.Formatter;
 import bot.utils.SimpleSender;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdminController {
 
@@ -17,10 +21,24 @@ public class AdminController {
         String msg = "Мем от [" + Formatter.formatTelegramText(user.getFirstName()) + "](tg://user?id=" + user.getId() + ")";
 
         sender.sendString(ADMIN_CHAT_ID, msg);
-        Controller.send(post, sender, ADMIN_CHAT_ID, "👍 " + post.getAgreesCount(), "admin-agree");
+        Integer messageId = Controller.send(post, sender, ADMIN_CHAT_ID);
+        editAdminAgreeKeyboard(post, sender, messageId);
     }
 
     public static void editAdminAgreeKeyboard(Post post, SimpleSender sender, Integer messageId) {
-        Controller.editInlineKeyboard(post, sender, ADMIN_CHAT_ID, "👍 " + post.getAgreesCount(), "admin-agree", messageId);
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+
+        row.add(InlineKeyboardButton.builder()
+                .text("\uD83D\uDCAC")
+                .url("https://t.me/onexfict_chat?thread=" + messageId)
+                .build());
+        row.add(InlineKeyboardButton.builder()
+                .text("👍 " + post.getAgreesCount())
+                .callbackData("admin-agree_" + post.getId())
+                .build());
+        keyboard.add(row);
+
+        Controller.editInlineKeyboard(keyboard, sender, ADMIN_CHAT_ID, messageId);
     }
 }

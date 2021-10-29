@@ -19,7 +19,7 @@ class Controller {
     private Controller() {
     }
 
-    static Integer send(Post post, SimpleSender sender, String chatId, String text, String query) {
+    static Integer send(Post post, SimpleSender sender, String chatId) {
         try {
             List<String> fileIds = post.getImagesFilesIds();
             Message message;
@@ -52,11 +52,7 @@ class Controller {
                 }
             }
 
-            Integer messageId = message.getMessageId();
-
-            editInlineKeyboard(post, sender, chatId, text, query, messageId);
-
-            return messageId;
+            return message.getMessageId();
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
@@ -64,14 +60,9 @@ class Controller {
         return null;
     }
 
-    static void editInlineKeyboard(Post post, SimpleSender sender, String chatId, String text, String query, Integer messageId) {
+    static void editInlineKeyboard(List<List<InlineKeyboardButton>> keyboard,
+                                   SimpleSender sender, String chatId, Integer messageId) {
         try {
-            List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-            List<InlineKeyboardButton> row = new ArrayList<>();
-
-            row.add(InlineKeyboardButton.builder().text(text).callbackData(query + "_" + post.getId()).build());
-            keyboard.add(row);
-
             EditMessageReplyMarkup edit = new EditMessageReplyMarkup();
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
 
