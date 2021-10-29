@@ -393,7 +393,7 @@ public class Main extends TelegramLongPollingBot {
 
         int postsToday = posts - yesterday.getPosts();
         int likesToday = likes - yesterday.getLikes();
-        int subscribersToday = likes - yesterday.getSubscribers();
+        int subscribersToday = subscribers - yesterday.getSubscribers();
 
         DateFormat format = new SimpleDateFormat("_На состояние dd.MM.yyyy HH:mm_");
 
