@@ -7,9 +7,15 @@ import bot.entities.BotUser;
 import bot.entities.Post;
 import bot.entities.Statistic;
 import bot.utils.Formatter;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class JpaRepositoriesService implements DBService {
@@ -192,6 +198,21 @@ public class JpaRepositoriesService implements DBService {
         statistic.setPosts(posts.size());
         statistic.setLikes(posts.stream().mapToInt(Post::getLikesCount).sum());
 
+        try {
+            statistic.setSubscribers(getSubscribers());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         saveStatistics(statistic);
+    }
+
+    private int getSubscribers() throws IOException {
+        Document doc = Jsoup.connect("https://t.me/onexfict")
+                .userAgent("Chrome/4.0.249.0 Safari/532.5")
+                .get();
+        Elements listN = doc.select("div.tgme_page_extra");
+
+        return Integer.parseInt(listN.text().split(" ")[0]);
     }
 }

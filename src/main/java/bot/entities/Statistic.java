@@ -24,15 +24,23 @@ public class Statistic {
     @Column(name = "likes")
     private int likes;
 
+    @Column(name = "subscribers")
+    private int subscribers;
+
     protected Statistic() {
     }
 
     public Statistic(Statistic old) {
         posts = old.posts;
         likes = old.likes;
+        subscribers = old.subscribers;
     }
 
     // getters
+
+    public Date getDate() {
+        return date;
+    }
 
     public int getPosts() {
         return posts;
@@ -46,8 +54,8 @@ public class Statistic {
         return posts == 0 ? 0 : Formatter.round((float) likes / posts, 2);
     }
 
-    public Date getDate() {
-        return date;
+    public int getSubscribers() {
+        return subscribers;
     }
 
     // setters
@@ -58,6 +66,10 @@ public class Statistic {
 
     public void setLikes(int likes) {
         this.likes = likes;
+    }
+
+    public void setSubscribers(int subscribers) {
+        this.subscribers = subscribers;
     }
 
     // core

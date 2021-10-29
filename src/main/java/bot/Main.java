@@ -388,10 +388,12 @@ public class Main extends TelegramLongPollingBot {
 
         int posts = today.getPosts();
         int likes = today.getLikes();
+        int subscribers = today.getSubscribers();
         float likesPerPost = today.getLikesPerPost();
 
         int postsToday = posts - yesterday.getPosts();
         int likesToday = likes - yesterday.getLikes();
+        int subscribersToday = likes - yesterday.getSubscribers();
 
         DateFormat format = new SimpleDateFormat("_На состояние dd.MM.yyyy HH:mm_");
 
@@ -401,7 +403,8 @@ public class Main extends TelegramLongPollingBot {
                 "\n" +
                 "📃 Постов запостили: *" + posts + "* (" + (postsToday > 0 ? "+" : "") + postsToday + " за сегодня)\n" +
                 "❤️ Лайков всего: *" + likes + "* (" + (likesToday > 0 ? "+" : "") + likesToday + " за сегодня)\n" +
-                "\uD83D\uDC65 Лайков за пост в среднем: *" + likesPerPost + "*\n" +
+                "\uD83D\uDC65 Подписчиков всего: *" + subscribers + "* (" + (subscribersToday > 0 ? "+" : "") + subscribersToday + " за сегодня)\n" +
+                "\uD83D\uDCC8 Лайков за пост в среднем: *" + likesPerPost + "*\n" +
                 "\n" +
                 format.format(new Date());
 
