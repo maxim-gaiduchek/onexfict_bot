@@ -465,6 +465,8 @@ public class Main extends TelegramLongPollingBot {
 
     private void createNewStatisticsEntity() {
         try {
+            sender.sendString(AdminController.ADMIN_CHAT_ID, "Statistics reset has started");
+
             service.createNewStatisticsEntity();
 
             sender.sendString(AdminController.ADMIN_CHAT_ID, "Statistics reset has done");

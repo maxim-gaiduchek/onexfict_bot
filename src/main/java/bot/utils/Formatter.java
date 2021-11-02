@@ -1,8 +1,30 @@
 package bot.utils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class Formatter {
 
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+
+    static {
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));
+    }
+
     private Formatter() {
+    }
+
+    public static Date format(Date date) {
+        try {
+            return DATE_FORMAT.parse(DATE_FORMAT.format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public static String formatTelegramText(String text) {
