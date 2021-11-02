@@ -30,10 +30,6 @@ public class AdminController {
         List<InlineKeyboardButton> row = new ArrayList<>();
 
         row.add(InlineKeyboardButton.builder()
-                .text("\uD83D\uDCAC")
-                .url("https://t.me/onexfict_chat?thread=" + messageId)
-                .build());
-        row.add(InlineKeyboardButton.builder()
                 .text("👍 " + post.getAgreesCount())
                 .callbackData("admin-agree_" + post.getId())
                 .build());

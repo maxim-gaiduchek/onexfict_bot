@@ -16,7 +16,9 @@ public interface DBService {
 
     // posts
 
-    Post getPost(Integer id);
+    Post getPostById(Integer id);
+
+    Post getPostByChannelMessageId(Integer channelMessageId);
 
     void savePost(Post post);
 

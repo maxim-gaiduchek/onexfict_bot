@@ -17,9 +17,9 @@ public class ChannelController {
     public static Integer post(Post post, SimpleSender sender) {
         if (post.isNotPosted()) {
             Integer postId = Controller.send(post, sender, CHANNEL_ID);
-            editPostLikesKeyboard(post, sender, postId);
+            createPostLikesKeyboard(post, sender, postId);
 
-            post.setPosted();
+            post.setPosted(postId);
 
             return postId;
         }
@@ -27,20 +27,37 @@ public class ChannelController {
         return null;
     }
 
-    public static void editPostLikesKeyboard(Post post, SimpleSender sender, Integer messageId) {
+    public static void createPostLikesKeyboard(Post post, SimpleSender sender, Integer postId) {
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();
 
-        /*row.add(InlineKeyboardButton.builder()
-                .text("\uD83D\uDCAC")
-                .url("https://t.me/onexfict_chat?thread=" + messageId)
-                .build());*/
         row.add(InlineKeyboardButton.builder()
                 .text("❤️ " + post.getLikesCount())
                 .callbackData("post-like_" + post.getId())
                 .build());
         keyboard.add(row);
 
-        Controller.editInlineKeyboard(keyboard, sender, CHANNEL_ID, messageId);
+        Controller.editInlineKeyboard(keyboard, sender, CHANNEL_ID, postId);
+    }
+
+    public static void editPostLikesKeyboard(Post post, SimpleSender sender) {
+        Integer groupMessageId = post.getGroupMessageId();
+
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+
+        if (groupMessageId != null) {
+            row.add(InlineKeyboardButton.builder()
+                    .text("\uD83D\uDCAC")
+                    .url("https://t.me/onexfict_chat/" + ((long) groupMessageId + 1000000L) + "?thread=" + groupMessageId)
+                    .build());
+        }
+        row.add(InlineKeyboardButton.builder()
+                .text("❤️ " + post.getLikesCount())
+                .callbackData("post-like_" + post.getId())
+                .build());
+        keyboard.add(row);
+
+        Controller.editInlineKeyboard(keyboard, sender, CHANNEL_ID, post.getChannelMessageId());
     }
 }

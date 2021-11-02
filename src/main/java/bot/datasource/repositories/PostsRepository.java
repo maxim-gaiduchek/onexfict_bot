@@ -8,6 +8,9 @@ import java.util.List;
 
 public interface PostsRepository extends JpaRepository<Post, Integer> {
 
+    @Query("SELECT post FROM Post post WHERE post.channelMessageId = ?1")
+    Post getByChannelMessageId(Integer channelMessageId);
+
     @Query("SELECT post FROM Post post WHERE post.isPosted = TRUE")
     List<Post> getAllPosted();
 

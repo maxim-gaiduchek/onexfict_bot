@@ -14,15 +14,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +35,8 @@ public class Main extends TelegramLongPollingBot {
 
     private static final ApplicationContext CONTEXT = new AnnotationConfigApplicationContext(DatasourceConfig.class);
     private final DBService service = (DBService) CONTEXT.getBean("service");
+
+    private static final Long GROUP_ID = -1001690363474L;
 
     private static final String STATS_STRING = "\uD83D\uDCCA Моя статистика";
     private static final String CREATE_POST_STRING = "\uD83D\uDCC3 Предложить пост";
@@ -80,6 +78,8 @@ public class Main extends TelegramLongPollingBot {
         } else if (message.isGroupMessage() || message.isSuperGroupMessage()) {
             if (chatId.toString().equals(AdminController.ADMIN_CHAT_ID)) {
                 parseAdminMessage(message);
+            } else if (chatId.equals(GROUP_ID)) {
+                parseGroupMessage(message);
             } else {
                 sender.leaveChat(chatId);
             }
@@ -307,7 +307,7 @@ public class Main extends TelegramLongPollingBot {
         String query = data.substring(0, data.indexOf('_'));
         String text = data.substring(data.indexOf('_') + 1);
 
-        Post post = service.getPost(Integer.parseInt(text));
+        Post post = service.getPostById(Integer.parseInt(text));
 
         switch (query) {
             case "admin-agree" -> {
@@ -335,7 +335,7 @@ public class Main extends TelegramLongPollingBot {
             case "post-like" -> {
                 boolean hasLiked = post.switchLike(userId);
 
-                ChannelController.editPostLikesKeyboard(post, sender, messageId);
+                ChannelController.editPostLikesKeyboard(post, sender);
 
                 new Thread(() -> {
                     if (hasLiked) {
@@ -397,7 +397,7 @@ public class Main extends TelegramLongPollingBot {
 
         DateFormat format = new SimpleDateFormat("_На состояние dd.MM.yyyy HH:mm_");
 
-        format.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        format.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));
 
         String msg = "\uD83D\uDCCA *Статистика канала*\n" +
                 "\n" +
@@ -411,6 +411,24 @@ public class Main extends TelegramLongPollingBot {
         sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
     }
 
+    // group message
+
+    private void parseGroupMessage(Message message) {
+        User from = message.getFrom();
+        Integer channelMessageId = message.getForwardFromMessageId();
+        Integer groupMessageId = message.getMessageId();
+
+        if (from.getId().equals(777000) && channelMessageId != null
+                && message.getForwardFromChat().getId().equals(message.getSenderChat().getId())) {
+            Post post = service.getPostByChannelMessageId(channelMessageId);
+
+            post.setGroupMessageId(groupMessageId);
+            ChannelController.editPostLikesKeyboard(post, sender);
+
+            service.savePost(post);
+        }
+    }
+
     // executor
 
     private class Executor extends Thread {
@@ -418,25 +436,26 @@ public class Main extends TelegramLongPollingBot {
         private static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
 
         static {
-            TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+            TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));
         }
 
-        private Executor() {}
+        private Executor() {
+        }
 
         @Override
         public void run() {
             while (true) {
-                String time = TIME_FORMAT.format(new Date());
-
-                switch (time) {
-                    case "00:00" -> createNewStatisticsEntity();
-                    case "22:00" -> sendAdminStats();
-                    default -> service.updateStatistics();
-                }
-
                 try {
+                    String time = TIME_FORMAT.format(new Date());
+
+                    switch (time) {
+                        case "00:00" -> createNewStatisticsEntity();
+                        case "22:00" -> sendAdminStats();
+                        default -> service.updateStatistics();
+                    }
+
                     sleep(60000);
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

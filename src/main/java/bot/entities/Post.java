@@ -22,6 +22,12 @@ public class Post {
     @Column(name = "creator_user_id")
     private Long creatorChatId;
 
+    @Column(name = "channel_message_id")
+    private Integer channelMessageId;
+
+    @Column(name = "group_message_id")
+    private Integer groupMessageId;
+
     @Column(name = "images_files_ids")
     @Convert(converter = StringToStringList.class)
     private List<String> imagesFilesIds = new ArrayList<>();
@@ -67,6 +73,18 @@ public class Post {
         return creatorChatId;
     }
 
+    public boolean hasChannelMessageId() {
+        return channelMessageId != null;
+    }
+
+    public Integer getChannelMessageId() {
+        return channelMessageId;
+    }
+
+    public Integer getGroupMessageId() {
+        return groupMessageId;
+    }
+
     public List<String> getImagesFilesIds() {
         return imagesFilesIds;
     }
@@ -101,6 +119,10 @@ public class Post {
     }
 
     // setters
+
+    public void setGroupMessageId(Integer groupMessageId) {
+        this.groupMessageId = groupMessageId;
+    }
 
     public void addImageFileId(String imageFileId) {
         imagesFilesIds.add(imageFileId);
@@ -138,9 +160,10 @@ public class Post {
         return false;
     }
 
-    public void setPosted() {
+    public void setPosted(Integer channelMessageId) {
         posted = new Date();
         isPosted = true;
+        this.channelMessageId = channelMessageId;
     }
 
     // core

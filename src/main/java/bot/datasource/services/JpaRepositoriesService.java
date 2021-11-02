@@ -53,8 +53,13 @@ public class JpaRepositoriesService implements DBService {
     // posts
 
     @Override
-    public Post getPost(Integer id) {
+    public Post getPostById(Integer id) {
         return postsRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Post getPostByChannelMessageId(Integer channelMessageId) {
+        return postsRepository.getByChannelMessageId(channelMessageId);
     }
 
     @Override
@@ -178,14 +183,14 @@ public class JpaRepositoriesService implements DBService {
     @Override
     public Statistic getTodayStatistics() {
         System.out.println(new Date());
-        System.out.println(new Date(new Date().getTime() + 3 * 60 * 60 * 1000));
+        System.out.println(new Date(new Date().getTime() + 2 * 60 * 60 * 1000));
 
-        return statisticsRepository.getByDate(new Date(new Date().getTime() + 3 * 60 * 60 * 1000));
+        return statisticsRepository.getByDate(new Date(new Date().getTime() + 2 * 60 * 60 * 1000));
     }
 
     @Override
     public Statistic getYesterdayStatistics() {
-        return statisticsRepository.getByDate(new Date(new Date().getTime() - 21 * 60 * 60 * 1000));
+        return statisticsRepository.getByDate(new Date(new Date().getTime() - 22 * 60 * 60 * 1000));
     }
 
     @Override
