@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ChannelController {
 
-    private static final String CHANNEL_ID = "-1001586043042";
+    public static final String CHANNEL_ID = "-1001586043042";
 
     private ChannelController() {
     }

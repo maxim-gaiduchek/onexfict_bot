@@ -419,6 +419,7 @@ public class Main extends TelegramLongPollingBot {
         Integer groupMessageId = message.getMessageId();
 
         if (from.getId().equals(777000) && channelMessageId != null
+                && channelMessageId.toString().equals(ChannelController.CHANNEL_ID)
                 && message.getForwardFromChat().getId().equals(message.getSenderChat().getId())) {
             Post post = service.getPostByChannelMessageId(channelMessageId);
 
