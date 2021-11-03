@@ -19,7 +19,7 @@ public class Formatter {
 
     public static Date formatDate(Date date) {
         try {
-            return DATE_FORMAT.parse(DATE_FORMAT.format(date));
+            return DATE_FORMAT.parse(DATE_FORMAT.format(new Date(date.getTime() + 3 * 60 * 60 * 1000)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
