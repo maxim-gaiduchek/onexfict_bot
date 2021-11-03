@@ -177,17 +177,17 @@ public class JpaRepositoriesService implements DBService {
 
     @Override
     public void createNewStatisticsEntity() {
-        saveStatistics(new Statistic(getYesterdayStatistics()));
+        saveStatistics(new Statistic());
     }
 
     @Override
     public Statistic getTodayStatistics() {
-        return statisticsRepository.getByDate(Formatter.format(new Date()));
+        return statisticsRepository.getByDate(Formatter.formatDate(new Date()));
     }
 
     @Override
     public Statistic getYesterdayStatistics() {
-        return statisticsRepository.getByDate(Formatter.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000)));
+        return statisticsRepository.getByDate(new Date(Formatter.formatDate(new Date()).getTime() - 24 * 60 * 60 * 1000));
     }
 
     @Override

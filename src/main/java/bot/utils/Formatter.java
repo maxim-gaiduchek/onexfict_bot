@@ -17,14 +17,14 @@ public class Formatter {
     private Formatter() {
     }
 
-    public static Date format(Date date) {
+    public static Date formatDate(Date date) {
         try {
             return DATE_FORMAT.parse(DATE_FORMAT.format(date));
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return date;
     }
 
     public static String formatTelegramText(String text) {

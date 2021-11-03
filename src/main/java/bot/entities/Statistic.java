@@ -16,24 +16,18 @@ public class Statistic {
 
     @Column(name = "date")
     @Temporal(TemporalType.DATE)
-    private Date date = new Date(new Date().getTime() + 3 * 60 * 60 * 1000);
+    private Date date = Formatter.formatDate(new Date());
 
     @Column(name = "posts")
-    private int posts;
+    private int posts = 0;
 
     @Column(name = "likes")
-    private int likes;
+    private int likes = 0;
 
     @Column(name = "subscribers")
-    private int subscribers;
+    private int subscribers = 0;
 
-    protected Statistic() {
-    }
-
-    public Statistic(Statistic old) {
-        posts = old.posts;
-        likes = old.likes;
-        subscribers = old.subscribers;
+    public Statistic() {
     }
 
     // getters

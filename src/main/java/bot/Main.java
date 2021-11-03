@@ -330,14 +330,13 @@ public class Main extends TelegramLongPollingBot {
                         sender.sendString(post.getCreatorId(), msg);
                     }
                 }
-
             }
             case "post-like" -> {
                 boolean hasLiked = post.switchLike(userId);
 
-                ChannelController.editPostLikesKeyboard(post, sender);
-
                 new Thread(() -> {
+                    ChannelController.editPostLikesKeyboard(post, sender);
+
                     if (hasLiked) {
                         sender.answerCallbackQuery(callbackQueryId, "Вы поставили лайк ❤️");
                     } else {
