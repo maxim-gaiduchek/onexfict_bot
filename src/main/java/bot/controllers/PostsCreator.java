@@ -79,6 +79,8 @@ public class PostsCreator {
 
     public static void addBy(SimpleSender sender, BotUser user, String by) {
         if (!by.equals(SKIP_ADDING_TEXT_STRING)) {
+            if (by.startsWith("by ")) by = by.substring(3);
+
             user.getPost().setBy(by);
         }
         sendAddSource(sender, user);

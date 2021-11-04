@@ -182,9 +182,6 @@ public class JpaRepositoriesService implements DBService {
 
     @Override
     public Statistic getTodayStatistics() {
-        System.out.println(Formatter.formatDate(new Date()));
-        System.out.println(Formatter.formatDate(new Date(Formatter.formatDate(new Date()).getTime() - 24 * 60 * 60 * 1000)));
-
         return statisticsRepository.getByDate(Formatter.formatDate(new Date()));
     }
 

@@ -36,7 +36,7 @@ public class Main extends TelegramLongPollingBot {
     private static final ApplicationContext CONTEXT = new AnnotationConfigApplicationContext(DatasourceConfig.class);
     private final DBService service = (DBService) CONTEXT.getBean("service");
 
-    private static final Long GROUP_ID = -1001690363474L;
+    private static final Long COMMENTS_GROUP_ID = -1001690363474L;
 
     private static final String STATS_STRING = "\uD83D\uDCCA Моя статистика";
     private static final String CREATE_POST_STRING = "\uD83D\uDCC3 Предложить пост";
@@ -78,8 +78,8 @@ public class Main extends TelegramLongPollingBot {
         } else if (message.isGroupMessage() || message.isSuperGroupMessage()) {
             if (chatId.toString().equals(AdminController.ADMIN_CHAT_ID)) {
                 parseAdminMessage(message);
-            } else if (chatId.equals(GROUP_ID)) {
-                parseGroupMessage(message);
+            } else if (chatId.equals(COMMENTS_GROUP_ID)) {
+                parseCommentsGroupMessage(message);
             } else {
                 sender.leaveChat(chatId);
             }
@@ -412,7 +412,7 @@ public class Main extends TelegramLongPollingBot {
 
     // group message
 
-    private void parseGroupMessage(Message message) {
+    private void parseCommentsGroupMessage(Message message) {
         User from = message.getFrom();
         Integer channelMessageId = message.getForwardFromMessageId();
         Integer groupMessageId = message.getMessageId();
@@ -422,10 +422,12 @@ public class Main extends TelegramLongPollingBot {
                 && message.getSenderChat().getId().toString().equals(ChannelController.CHANNEL_ID)) {
             Post post = service.getPostByChannelMessageId(channelMessageId);
 
-            post.setGroupMessageId(groupMessageId);
-            ChannelController.editPostLikesKeyboard(post, sender);
+            if (post != null) {
+                post.setGroupMessageId(groupMessageId);
+                ChannelController.editPostLikesKeyboard(post, sender);
 
-            service.savePost(post);
+                service.savePost(post);
+            }
         }
     }
 
