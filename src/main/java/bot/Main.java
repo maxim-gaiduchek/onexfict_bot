@@ -412,18 +412,13 @@ public class Main extends TelegramLongPollingBot {
         sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
     }
 
-    // group message
+    // comments group message
 
     private void parseCommentsGroupMessage(Message message) {
         Message replyMessage = message.getReplyToMessage();
 
-        Integer forwardedChannelMessageId = message.getForwardFromMessageId();
-        Integer replyChannelMessageId = replyMessage.getForwardFromMessageId();
-
-        if (message.getFrom().getId().equals(777000) && forwardedChannelMessageId != null
-                && message.getForwardFromChat().getId().toString().equals(ChannelController.CHANNEL_ID)
-                && message.getSenderChat().getId().toString().equals(ChannelController.CHANNEL_ID)) {
-            Post post = service.getPostByChannelMessageId(forwardedChannelMessageId);
+        if (isComment(message)) {
+            Post post = service.getPostByChannelMessageId(message.getForwardFromMessageId());
 
             if (post != null) {
                 post.setGroupMessageId(message.getMessageId());
@@ -431,10 +426,8 @@ public class Main extends TelegramLongPollingBot {
 
                 service.savePost(post);
             }
-        } else if (replyMessage.getFrom().getId().equals(777000) && replyChannelMessageId != null
-                && replyMessage.getForwardFromChat().getId().toString().equals(ChannelController.CHANNEL_ID)
-                && replyMessage.getSenderChat().getId().toString().equals(ChannelController.CHANNEL_ID)) {
-            Post post = service.getPostByChannelMessageId(replyChannelMessageId);
+        } else if (isComment(replyMessage)) {
+            Post post = service.getPostByChannelMessageId(replyMessage.getForwardFromMessageId());
 
             if (post != null) {
                 post.incrementCommentsCount();
@@ -443,6 +436,12 @@ public class Main extends TelegramLongPollingBot {
                 service.savePost(post);
             }
         }
+    }
+
+    private boolean isComment(Message message) {
+        return message.getFrom().getId().equals(777000) && message.getForwardFromMessageId() != null
+                && message.getForwardFromChat().getId().toString().equals(ChannelController.CHANNEL_ID)
+                && message.getSenderChat().getId().toString().equals(ChannelController.CHANNEL_ID);
     }
 
     // executor
