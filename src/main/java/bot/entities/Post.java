@@ -215,12 +215,15 @@ public class Post {
         return "Post{" +
                 "id=" + id +
                 ", creatorChatId=" + creatorChatId +
+                ", channelMessageId=" + channelMessageId +
+                ", groupMessageId=" + groupMessageId +
                 ", imagesFilesIds=" + imagesFilesIds +
                 ", text='" + text + '\'' +
                 ", by='" + by + '\'' +
                 ", source='" + source + '\'' +
                 ", likes=" + likes +
                 ", agrees=" + agrees +
+                ", commentsCount=" + commentsCount +
                 ", isPosted=" + isPosted +
                 ", posted=" + posted +
                 '}';

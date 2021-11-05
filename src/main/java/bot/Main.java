@@ -417,9 +417,8 @@ public class Main extends TelegramLongPollingBot {
     private void parseCommentsGroupMessage(Message message) {
         Message replyMessage = message.getReplyToMessage();
 
-        Integer groupMessageId = message.getMessageId();
         Integer forwardedChannelMessageId = message.getForwardFromMessageId();
-        Integer replyChannelMessageId = replyMessage.getMessageId();
+        Integer replyChannelMessageId = replyMessage.getForwardFromMessageId();
 
         if (message.getFrom().getId().equals(777000) && forwardedChannelMessageId != null
                 && message.getForwardFromChat().getId().toString().equals(ChannelController.CHANNEL_ID)
@@ -427,12 +426,12 @@ public class Main extends TelegramLongPollingBot {
             Post post = service.getPostByChannelMessageId(forwardedChannelMessageId);
 
             if (post != null) {
-                post.setGroupMessageId(groupMessageId);
+                post.setGroupMessageId(message.getMessageId());
                 ChannelController.editPostLikesKeyboard(post, sender);
 
                 service.savePost(post);
             }
-        } else if (replyChannelMessageId != null
+        } else if (replyMessage.getFrom().getId().equals(777000) && replyChannelMessageId != null
                 && replyMessage.getForwardFromChat().getId().toString().equals(ChannelController.CHANNEL_ID)
                 && replyMessage.getSenderChat().getId().toString().equals(ChannelController.CHANNEL_ID)) {
             Post post = service.getPostByChannelMessageId(replyChannelMessageId);
