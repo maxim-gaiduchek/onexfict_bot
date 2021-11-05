@@ -49,6 +49,9 @@ public class Post {
     @Convert(converter = StringToIntList.class)
     private List<Integer> agrees = new ArrayList<>();
 
+    @Column(name = "comments_count")
+    private int commentsCount = 0;
+
     @Column(name = "is_posted")
     private boolean isPosted = false;
 
@@ -114,6 +117,10 @@ public class Post {
         return sb.toString();
     }
 
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
     public boolean isNotPosted() {
         return !isPosted;
     }
@@ -158,6 +165,10 @@ public class Post {
         }
 
         return false;
+    }
+
+    public void incrementCommentsCount() {
+        commentsCount++;
     }
 
     public void setPosted(Integer channelMessageId) {

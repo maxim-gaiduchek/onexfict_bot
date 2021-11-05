@@ -48,7 +48,7 @@ public class ChannelController {
 
         if (groupMessageId != null) {
             row.add(InlineKeyboardButton.builder()
-                    .text("\uD83D\uDCAC")
+                    .text("\uD83D\uDCAC" + (post.getCommentsCount() > 0 ? (" " + post.getCommentsCount()) : ""))
                     .url("https://t.me/onexfict_chat/" + ((long) groupMessageId + 1000000L) + "?thread=" + groupMessageId)
                     .build());
         }

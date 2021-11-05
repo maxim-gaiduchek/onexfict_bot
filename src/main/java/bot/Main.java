@@ -14,7 +14,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.objects.*;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -413,17 +415,30 @@ public class Main extends TelegramLongPollingBot {
     // group message
 
     private void parseCommentsGroupMessage(Message message) {
-        User from = message.getFrom();
-        Integer channelMessageId = message.getForwardFromMessageId();
-        Integer groupMessageId = message.getMessageId();
+        Message replyMessage = message.getReplyToMessage();
 
-        if (from.getId().equals(777000) && channelMessageId != null
+        Integer groupMessageId = message.getMessageId();
+        Integer forwardedChannelMessageId = message.getForwardFromMessageId();
+        Integer replyChannelMessageId = replyMessage.getMessageId();
+
+        if (message.getFrom().getId().equals(777000) && forwardedChannelMessageId != null
                 && message.getForwardFromChat().getId().toString().equals(ChannelController.CHANNEL_ID)
                 && message.getSenderChat().getId().toString().equals(ChannelController.CHANNEL_ID)) {
-            Post post = service.getPostByChannelMessageId(channelMessageId);
+            Post post = service.getPostByChannelMessageId(forwardedChannelMessageId);
 
             if (post != null) {
                 post.setGroupMessageId(groupMessageId);
+                ChannelController.editPostLikesKeyboard(post, sender);
+
+                service.savePost(post);
+            }
+        } else if (replyChannelMessageId != null
+                && replyMessage.getForwardFromChat().getId().toString().equals(ChannelController.CHANNEL_ID)
+                && replyMessage.getSenderChat().getId().toString().equals(ChannelController.CHANNEL_ID)) {
+            Post post = service.getPostByChannelMessageId(replyChannelMessageId);
+
+            if (post != null) {
+                post.incrementCommentsCount();
                 ChannelController.editPostLikesKeyboard(post, sender);
 
                 service.savePost(post);
