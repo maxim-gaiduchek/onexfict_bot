@@ -96,6 +96,8 @@ public class Post {
         return (text != null ? Formatter.formatTelegramText(text + "\n\n") : "") +
                 (by != null ? Formatter.formatTelegramText("by " + by + "\n\n") : "") +
                 (source != null ? ("[источник](" + source + ")\n\n") : "") +
+                "[предложка](https://t.me/onexfict_bot)\n" +
+                "\n" +
                 "@onexfict";
     }
 

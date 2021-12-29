@@ -464,7 +464,7 @@ public class Main extends TelegramLongPollingBot {
                     String time = TIME_FORMAT.format(new Date());
 
                     switch (time) {
-                        case "00:00" -> createNewStatisticsEntity();
+                        case "00:00" -> service.createNewStatisticsEntity();
                         case "22:00" -> sendAdminStats();
                         default -> service.updateStatistics();
                     }
@@ -474,21 +474,6 @@ public class Main extends TelegramLongPollingBot {
                     e.printStackTrace();
                 }
             }
-        }
-    }
-
-    private void createNewStatisticsEntity() {
-        try {
-            sender.sendString(AdminController.ADMIN_CHAT_ID, "Statistics reset has started");
-
-            service.createNewStatisticsEntity();
-
-            sender.sendString(AdminController.ADMIN_CHAT_ID, "Statistics reset has done");
-            sender.sendString(AdminController.ADMIN_CHAT_ID, service.getYesterdayStatistics().toString());
-            sender.sendString(AdminController.ADMIN_CHAT_ID, service.getTodayStatistics().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            sender.sendString(AdminController.ADMIN_CHAT_ID, e.getMessage());
         }
     }
 
