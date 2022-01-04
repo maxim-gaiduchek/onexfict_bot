@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.KickChatMember;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.LeaveChat;
+import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
@@ -553,6 +554,27 @@ public class SimpleSender extends DefaultAbsSender {
 
     public Message sendAnimation(Long chatId, Animation animation, String caption) {
         return sendAnimation(chatId.toString(), animation, caption);
+    }
+
+    // pin massage
+
+    public Serializable pinMessage(Long chatId, Integer messageId) {
+        return pinMessage(chatId.toString(), messageId);
+    }
+
+    public Serializable pinMessage(String chatId, Integer messageId) {
+        PinChatMessage pinChatMessage = PinChatMessage.builder()
+                .chatId(chatId)
+                .messageId(messageId)
+                .build();
+
+        try {
+            return execute(pinChatMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     // send chat action

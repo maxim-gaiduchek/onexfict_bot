@@ -40,7 +40,9 @@ class Controller {
                 send.getMedias().get(0).setCaption(post.getPostText());
 
                 message = sender.execute(send).get(0);
-                message = sender.sendString(chatId, "Оценивайте, господа", message.getMessageId());
+                if (AdminController.ADMIN_CHAT_ID.equals(chatId)) {
+                    message = sender.sendString(chatId, "Оценивайте, господа", message.getMessageId());
+                }
             } else {
                 String fileIdString = fileIds.get(0);
                 String fileId = fileIdString.substring(fileIdString.indexOf(':') + 1);

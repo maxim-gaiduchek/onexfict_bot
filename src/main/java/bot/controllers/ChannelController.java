@@ -17,7 +17,7 @@ public class ChannelController {
     public static Integer post(Post post, SimpleSender sender) {
         if (post.isNotPosted()) {
             Integer postId = Controller.send(post, sender, CHANNEL_ID);
-            createPostLikesKeyboard(post, sender, postId);
+            // createPostLikesKeyboard(post, sender, postId);
 
             post.setPosted(postId);
 
