@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.KickChatMember;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.LeaveChat;
 import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
+import org.telegram.telegrambots.meta.api.methods.pinnedmessages.UnpinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.send.*;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
@@ -570,6 +571,45 @@ public class SimpleSender extends DefaultAbsSender {
 
         try {
             return execute(pinChatMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Serializable pinMessage(Long chatId, Integer messageId, boolean disableNotification) {
+        return pinMessage(chatId.toString(), messageId, disableNotification);
+    }
+
+    public Serializable pinMessage(String chatId, Integer messageId, boolean disableNotification) {
+        PinChatMessage pinChatMessage = PinChatMessage.builder()
+                .chatId(chatId)
+                .messageId(messageId)
+                .disableNotification(disableNotification)
+                .build();
+
+        try {
+            return execute(pinChatMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Serializable unpinMessage(Long chatId, Integer messageId) {
+        return unpinMessage(chatId.toString(), messageId);
+    }
+
+    public Serializable unpinMessage(String chatId, Integer messageId) {
+        UnpinChatMessage unpinChatMessage = UnpinChatMessage.builder()
+                .chatId(chatId)
+                .messageId(messageId)
+                .build();
+
+        try {
+            return execute(unpinChatMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

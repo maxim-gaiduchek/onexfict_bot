@@ -324,6 +324,7 @@ public class Main extends TelegramLongPollingBot {
                     Integer postId = ChannelController.post(post, sender);
 
                     sender.removeKeyboard(chatId, messageId);
+                    sender.unpinMessage(chatId, messageId);
                     sender.sendString(chatId, "Пост подтвержден " + post.getWhoHasAgreed() + " и запостен", messageId);
 
                     if (postId != null) {
