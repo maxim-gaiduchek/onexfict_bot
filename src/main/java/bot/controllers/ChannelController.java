@@ -17,27 +17,12 @@ public class ChannelController {
     public static Integer post(Post post, SimpleSender sender) {
         if (post.isNotPosted()) {
             Integer postId = Controller.send(post, sender, CHANNEL_ID);
-            // createPostLikesKeyboard(post, sender, postId);
-
             post.setPosted(postId);
 
             return postId;
         }
 
         return null;
-    }
-
-    public static void createPostLikesKeyboard(Post post, SimpleSender sender, Integer postId) {
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        List<InlineKeyboardButton> row = new ArrayList<>();
-
-        row.add(InlineKeyboardButton.builder()
-                .text("❤️ " + post.getLikesCount())
-                .callbackData("post-like_" + post.getId())
-                .build());
-        keyboard.add(row);
-
-        Controller.editInlineKeyboard(keyboard, sender, CHANNEL_ID, postId);
     }
 
     public static void editPostLikesKeyboard(Post post, SimpleSender sender) {

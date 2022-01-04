@@ -38,8 +38,6 @@ public class Main extends TelegramLongPollingBot {
     private static final ApplicationContext CONTEXT = new AnnotationConfigApplicationContext(DatasourceConfig.class);
     private final DBService service = (DBService) CONTEXT.getBean("service");
 
-    private static final Long COMMENTS_GROUP_ID = -1001690363474L;
-
     private static final String STATS_STRING = "\uD83D\uDCCA Моя статистика";
     private static final String CREATE_POST_STRING = "\uD83D\uDCC3 Предложить пост";
 
@@ -80,8 +78,6 @@ public class Main extends TelegramLongPollingBot {
         } else if (message.isGroupMessage() || message.isSuperGroupMessage()) {
             if (chatId.toString().equals(AdminController.ADMIN_CHAT_ID)) {
                 parseAdminMessage(message);
-            } else if (chatId.equals(COMMENTS_GROUP_ID)) {
-                parseCommentsGroupMessage(message);
             } else {
                 sender.leaveChat(chatId);
             }
@@ -411,38 +407,6 @@ public class Main extends TelegramLongPollingBot {
                 format.format(new Date());
 
         sender.sendString(AdminController.ADMIN_CHAT_ID, msg);
-    }
-
-    // comments group message
-
-    private void parseCommentsGroupMessage(Message message) {
-        Message replyMessage = message.getReplyToMessage();
-
-        if (isComment(message)) {
-            Post post = service.getPostByChannelMessageId(message.getForwardFromMessageId());
-
-            if (post != null) {
-                post.setGroupMessageId(message.getMessageId());
-                ChannelController.editPostLikesKeyboard(post, sender);
-
-                service.savePost(post);
-            }
-        } else if (isComment(replyMessage)) {
-            Post post = service.getPostByChannelMessageId(replyMessage.getForwardFromMessageId());
-
-            if (post != null) {
-                post.incrementCommentsCount();
-                ChannelController.editPostLikesKeyboard(post, sender);
-
-                service.savePost(post);
-            }
-        }
-    }
-
-    private boolean isComment(Message message) {
-        return message.getFrom().getId().equals(777000) && message.getForwardFromMessageId() != null
-                && message.getForwardFromChat().getId().toString().equals(ChannelController.CHANNEL_ID)
-                && message.getSenderChat().getId().toString().equals(ChannelController.CHANNEL_ID);
     }
 
     // executor
