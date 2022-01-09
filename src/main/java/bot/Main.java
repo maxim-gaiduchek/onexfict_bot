@@ -317,11 +317,12 @@ public class Main extends TelegramLongPollingBot {
 
                 AdminController.editAdminAgreeKeyboard(post, sender, messageId);
                 if (post.getAgreesCount() >= AdminController.ADMIN_LIKES) {
+                    String adminMgs = "Пост подтвержден " + post.getWhoHasAgreed() + " и запостен. *Поставьте реакции на посте на канале!*";
                     Integer postId = ChannelController.post(post, sender);
 
                     sender.removeKeyboard(chatId, messageId);
                     sender.unpinMessage(chatId, messageId);
-                    sender.sendString(chatId, "Пост подтвержден " + post.getWhoHasAgreed() + " и запостен", messageId);
+                    sender.sendString(chatId, adminMgs, messageId);
 
                     if (postId != null) {
                         String msg = "[Пост](https://t.me/onexfict/" + postId + ") подтвержден и опубликован. Спасибо за поддержку❤️";

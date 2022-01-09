@@ -23,7 +23,7 @@ public class AdminController {
         sender.sendString(ADMIN_CHAT_ID, msg);
         Integer messageId = Controller.send(post, sender, ADMIN_CHAT_ID);
         editAdminAgreeKeyboard(post, sender, messageId);
-        sender.pinMessage(ADMIN_CHAT_ID, messageId);
+        sender.pinMessage(ADMIN_CHAT_ID, messageId, false);
     }
 
     public static void editAdminAgreeKeyboard(Post post, SimpleSender sender, Integer messageId) {

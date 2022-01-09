@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "posts")
@@ -110,13 +111,9 @@ public class Post {
     }
 
     public String getWhoHasAgreed() {
-        StringBuilder sb = new StringBuilder("[этим](tg://user?id=").append(agrees.get(0)).append(")");
-
-        for (int i = 1; i < agrees.size(); i++) {
-            sb.append(", [этим](tg://user?id=").append(agrees.get(i)).append(")");
-        }
-
-        return sb.toString();
+        return agrees.stream()
+                .map(userId -> "[этим](tg://user?id=" + userId + ")")
+                .collect(Collectors.joining(", "));
     }
 
     public int getCommentsCount() {
