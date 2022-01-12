@@ -34,7 +34,8 @@ public class Formatter {
                 .replace("~", "\\~")
                 .replace("`", "\\`")
                 .replace("[", "\\[")
-                .replace("!", "\\!");
+                .replace("!", "\\!")
+                .replace(".", "\\.");
     }
 
     public static String formatNumeralText(int number, String ending0, String ending1, String ending2) {
