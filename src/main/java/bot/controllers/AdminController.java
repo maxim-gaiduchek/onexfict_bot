@@ -12,7 +12,15 @@ import java.util.List;
 public class AdminController {
 
     public static final String ADMIN_CHAT_ID = "-1001523866129";
-    public static final int ADMIN_LIKES = 4;
+    public static final int ADMIN_LIKES;
+
+    static {
+        if (System.getenv("ADMIN_LIKES") != null) {
+            ADMIN_LIKES = Integer.parseInt(System.getenv("ADMIN_LIKES"));
+        } else {
+            ADMIN_LIKES = 3;
+        }
+    }
 
     private AdminController() {
     }
