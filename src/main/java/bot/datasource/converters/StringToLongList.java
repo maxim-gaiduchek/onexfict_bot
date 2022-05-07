@@ -8,17 +8,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Converter
-public class StringToIntList implements AttributeConverter<List<Integer>, String> {
+public class StringToLongList implements AttributeConverter<List<Long>, String> {
 
     @Override
-    public String convertToDatabaseColumn(List<Integer> integers) {
+    public String convertToDatabaseColumn(List<Long> integers) {
         return integers.stream().map(Object::toString).collect(Collectors.joining(","));
     }
 
     @Override
-    public List<Integer> convertToEntityAttribute(String s) {
+    public List<Long> convertToEntityAttribute(String s) {
         if (s == null || s.equals("")) return new ArrayList<>();
 
-        return new ArrayList<>(Arrays.stream(s.split(",")).map(Integer::parseInt).toList());
+        return new ArrayList<>(Arrays.stream(s.split(",")).map(Long::parseLong).toList());
     }
 }

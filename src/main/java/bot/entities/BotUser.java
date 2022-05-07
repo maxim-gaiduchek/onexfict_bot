@@ -1,11 +1,10 @@
 package bot.entities;
 
-import bot.datasource.converters.StringToIntList;
+import bot.datasource.converters.StringToLongList;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -24,8 +23,8 @@ public class BotUser {
     private Post post;
 
     @Column(name = "created_posts_ids")
-    @Convert(converter = StringToIntList.class)
-    private List<Integer> createdPostsIds = new ArrayList<>();
+    @Convert(converter = StringToLongList.class)
+    private List<Long> createdPostsIds = new ArrayList<>();
 
     protected BotUser() {
     }
@@ -48,7 +47,7 @@ public class BotUser {
         return post;
     }
 
-    public List<Integer> getCreatedPostsIds() {
+    public List<Long> getCreatedPostsIds() {
         return createdPostsIds;
     }
 
@@ -62,7 +61,7 @@ public class BotUser {
         this.post = post;
     }
 
-    public void addCreatedPost(int postId) {
+    public void addCreatedPost(long postId) {
         createdPostsIds.add(postId);
     }
 

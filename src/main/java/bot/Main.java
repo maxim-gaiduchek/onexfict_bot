@@ -299,7 +299,7 @@ public class Main extends TelegramLongPollingBot {
         Message message = callbackQuery.getMessage();
         Long chatId = message.getChatId();
         Integer messageId = message.getMessageId();
-        Integer userId = callbackQuery.getFrom().getId();
+        Long userId = callbackQuery.getFrom().getId();
 
         String data = callbackQuery.getData();
         String query = data.substring(0, data.indexOf('_'));

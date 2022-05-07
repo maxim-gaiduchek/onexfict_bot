@@ -1,6 +1,6 @@
 package bot.entities;
 
-import bot.datasource.converters.StringToIntList;
+import bot.datasource.converters.StringToLongList;
 import bot.datasource.converters.StringToStringList;
 import bot.utils.Formatter;
 
@@ -18,7 +18,7 @@ public class Post {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column(name = "creator_user_id")
     private Long creatorChatId;
@@ -43,12 +43,12 @@ public class Post {
     private String source;
 
     @Column(name = "likes")
-    @Convert(converter = StringToIntList.class)
-    private List<Integer> likes = new ArrayList<>();
+    @Convert(converter = StringToLongList.class)
+    private List<Long> likes = new ArrayList<>();
 
     @Column(name = "agrees")
-    @Convert(converter = StringToIntList.class)
-    private List<Integer> agrees = new ArrayList<>();
+    @Convert(converter = StringToLongList.class)
+    private List<Long> agrees = new ArrayList<>();
 
     @Column(name = "comments_count")
     private int commentsCount = 0;
@@ -69,7 +69,7 @@ public class Post {
 
     // getters
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -146,7 +146,7 @@ public class Post {
         this.source = source;
     }
 
-    public boolean switchLike(Integer userId) {
+    public boolean switchLike(Long userId) {
         if (!likes.remove(userId)) {
             likes.add(userId);
 
@@ -156,7 +156,7 @@ public class Post {
         return false;
     }
 
-    public boolean switchAgree(Integer userId) {
+    public boolean switchAgree(Long userId) {
         if (!agrees.remove(userId)) {
             agrees.add(userId);
 
@@ -198,7 +198,7 @@ public class Post {
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = (int) (id >>> 31);
         result = 31 * result + (imagesFilesIds != null ? imagesFilesIds.hashCode() : 0);
         result = 31 * result + (text != null ? text.hashCode() : 0);
         result = 31 * result + (by != null ? by.hashCode() : 0);
