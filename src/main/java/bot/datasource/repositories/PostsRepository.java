@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface PostsRepository extends JpaRepository<Post, Integer> {
+public interface PostsRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT post FROM Post post WHERE post.channelMessageId = ?1")
     Post getByChannelMessageId(Integer channelMessageId);

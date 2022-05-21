@@ -305,7 +305,7 @@ public class Main extends TelegramLongPollingBot {
         String query = data.substring(0, data.indexOf('_'));
         String text = data.substring(data.indexOf('_') + 1);
 
-        Post post = service.getPostById(Integer.parseInt(text));
+        Post post = service.getPostById(Long.parseLong(text));
 
         switch (query) {
             case "admin-agree" -> {

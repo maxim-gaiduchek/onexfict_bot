@@ -16,7 +16,7 @@ public interface DBService {
 
     // posts
 
-    Post getPostById(Integer id);
+    Post getPostById(Long id);
 
     Post getPostByChannelMessageId(Integer channelMessageId);
 
