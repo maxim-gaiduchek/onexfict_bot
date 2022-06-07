@@ -30,8 +30,8 @@ import java.util.TimeZone;
 
 public class Main extends TelegramLongPollingBot {
 
-    private static final String BOT_USERNAME = "onexfict_bot";
-    private static final String BOT_TOKEN = "1978241261:AAFVRkuDYwMRk4ptlr81uzJ2RwO9Ke49hJk";
+    private static final String BOT_USERNAME = System.getenv("BOT_USERNAME");
+    private static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
 
     private final SimpleSender sender = new SimpleSender(BOT_TOKEN);
 

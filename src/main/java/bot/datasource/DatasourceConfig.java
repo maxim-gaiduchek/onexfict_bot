@@ -21,10 +21,10 @@ import javax.sql.DataSource;
 @EntityScan("/bot/entities")
 public class DatasourceConfig {
 
-    private static final String JDBC_URL = "jdbc:postgresql://ec2-52-18-116-67.eu-west-1.compute.amazonaws.com:5432/dbproh10v09til";
-    private static final String JDBC_USERNAME = "tmrrpnytnnobjq";
-    private static final String JDBC_PASSWORD = "e22795316214d7ceefde32831ce1e03c082ac87e57b9679abbdfce5264ea5199";
-    private static final int JDBC_MAX_CONNECTION_POOL = 5;
+    private static final String JDBC_URL = System.getenv("JDBC_URL");
+    private static final String JDBC_USERNAME = System.getenv("JDBC_USERNAME");
+    private static final String JDBC_PASSWORD = System.getenv("JDBC_PASSWORD");
+    private static final int JDBC_MAX_CONNECTION_POOL = Integer.parseInt(System.getenv("JDBC_MAX_CONNECTION_POOL"));
 
     @Bean
     public DataSource dataSource() {
