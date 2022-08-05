@@ -39,7 +39,7 @@ public class Main extends TelegramLongPollingBot {
     private final DBService service = (DBService) CONTEXT.getBean("service");
 
     private static final String STATS_STRING = "\uD83D\uDCCA Моя статистика";
-    private static final String CREATE_POST_STRING = "\uD83D\uDCC3 Предложить пост";
+    private static final String CREATE_POST_STRING = "\uD83D\uDCC3 Запропонувати пост";
 
     // start
 
@@ -126,7 +126,7 @@ public class Main extends TelegramLongPollingBot {
 
     private void startCommand(Long chatId) {
         String msg = """
-                👋 Это предложка 1xФИВТ (@onexfict). Тут можно предложить мем или новость""";
+                👋 Це пропонувачка 1xФІОТ (@onexfict). Тут можна запропонувати мем чи новину""";
 
         sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
@@ -135,14 +135,14 @@ public class Main extends TelegramLongPollingBot {
         BotUser user = service.getUser(chatId);
 
         int allPosts = user.getCreatedPostsIds().size();
-        int allLikes = service.getLikesSum(user);
+        /*int allLikes = service.getLikesSum(user);
         float allLikesPerPost = service.getLikesPerPost(user);
 
         int lastLikes = service.get10LastPostsLikesSum(user);
-        float lastLikesPerPost = service.get10LastPostsLikesPerPost(user);
+        float lastLikesPerPost = service.get10LastPostsLikesPerPost(user);*/
 
         String allTopPostsString = getTop(service.getPostedPostsTop(user));
-        String allTopLikesString = getTop(service.getLikesTop(user));
+        /*String allTopLikesString = getTop(service.getLikesTop(user));
         String allTopLikesPerPostString;
 
         String lastTopLikesString = getTop(service.get10LastPostsLikesTop(user));
@@ -152,21 +152,21 @@ public class Main extends TelegramLongPollingBot {
             allTopLikesPerPostString = getTop(service.getLikesPerPostTop(user));
             lastTopLikesPerPostString = getTop(service.get10LastPostsLikesPerPostTop(user));
         } else {
-            String numeral = Formatter.formatNumeralText(5 - allPosts, "пост", "поста", "постов");
-            allTopLikesPerPostString = " (надо еще " + numeral + " для открытия топа)";
-            lastTopLikesPerPostString = " (надо еще " + numeral + " для открытия топа)";
-        }
+            String numeral = Formatter.formatNumeralText(5 - allPosts, "пост", "поста", "постів");
+            allTopLikesPerPostString = " (потрібно ще " + numeral + " щоб відкрити топ)";
+            lastTopLikesPerPostString = " (потрібно ще " + numeral + " щоб відкрити топ)";
+        }*/
 
-        String msg = "\uD83D\uDCCA *Твоя общая статистика*\n" +
+        String msg = "\uD83D\uDCCA *Твоя загальна статистика*\n" +
                 "\n" +
-                "📃 Постов запостили: *" + allPosts + "*" + allTopPostsString + "\n" +
-                "❤️ Лайков всего: *" + allLikes + "*" + allTopLikesString + "\n" +
+                "📃 Постів запощено: *" + allPosts + "*" + allTopPostsString/* + "\n" +
+                "❤️ Лайків всього: *" + allLikes + "*" + allTopLikesString + "\n" +
                 "\uD83D\uDC65 Лайков за пост в среднем: *" + allLikesPerPost + "*" + allTopLikesPerPostString + "\n" +
                 "\n" +
                 "\uD83D\uDCCA *Твоя статистика за 10 последних постов*\n" +
                 "\n" +
                 "❤️ Лайков: *" + lastLikes + "*" + lastTopLikesString + "\n" +
-                "\uD83D\uDC65 Лайков за пост в среднем: *" + lastLikesPerPost + "*" + lastTopLikesPerPostString;
+                "\uD83D\uDC65 Лайков за пост в среднем: *" + lastLikesPerPost + "*" + lastTopLikesPerPostString*/;
 
         sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
@@ -182,10 +182,10 @@ public class Main extends TelegramLongPollingBot {
 
     private void helpCommand(Long chatId) {
         String msg = """
-                ❓ Это предложка 1xФИВТ (@onexfict).
+                ❓ Це пропонувачка 1xФІОТ (@onexfict).
                                 
-                Введи /post, чтоб предложить мем
-                Введи /stats, чтоб глянуть свою статистику мемодела""";
+                Введи /post, щоб запропонувати мем
+                Введи /stats, щоб переглянути свою статистику мемороба""";
 
         sender.sendStringAndKeyboard(chatId, msg, getCreatePostKeyboard(), true);
     }
@@ -234,7 +234,8 @@ public class Main extends TelegramLongPollingBot {
                 service.saveUser(user);
                 service.deletePost(post);
 
-                sender.sendStringAndKeyboard(chatId, "Создание поста прекращено", getCreatePostKeyboard(), true);
+                sender.sendStringAndKeyboard(chatId, "Створення посту припинено",
+                        getCreatePostKeyboard(), true);
             } else {
                 helpCommand(chatId);
             }
@@ -310,14 +311,14 @@ public class Main extends TelegramLongPollingBot {
         switch (query) {
             case "admin-agree" -> {
                 if (post.switchAgree(userId)) {
-                    sender.answerCallbackQuery(callbackQueryId, "Вы одобрили пост 👍");
+                    sender.answerCallbackQuery(callbackQueryId, "Ви схвалили пост 👍");
                 } else {
-                    sender.answerCallbackQuery(callbackQueryId, "Вы убрали одобрение поста 👎");
+                    sender.answerCallbackQuery(callbackQueryId, "Ви прибрали схвалення посту 👎");
                 }
 
                 AdminController.editAdminAgreeKeyboard(post, sender, messageId);
                 if (post.getAgreesCount() >= AdminController.ADMIN_LIKES) {
-                    String adminMgs = "Пост подтвержден " + post.getWhoHasAgreed() + " и запостен. *Поставьте реакции на посте на канале!*";
+                    String adminMgs = "Пост підтверджений " + post.getWhoHasAgreed() + " і запостили. *Поставте реакції на пості на каналі!*";
                     Integer postId = ChannelController.post(post, sender);
 
                     sender.removeKeyboard(chatId, messageId);
@@ -325,7 +326,7 @@ public class Main extends TelegramLongPollingBot {
                     sender.sendString(chatId, adminMgs, messageId);
 
                     if (postId != null) {
-                        String msg = "[Пост](https://t.me/onexfict/" + postId + ") подтвержден и опубликован. Спасибо за поддержку❤️";
+                        String msg = "[Пост](https://t.me/onexfict/" + postId + ") підтверджено та опубліковано. Дякую за підтримку❤️";
 
                         sender.sendString(post.getCreatorId(), msg);
                     }
@@ -338,9 +339,9 @@ public class Main extends TelegramLongPollingBot {
                     ChannelController.editPostLikesKeyboard(post, sender);
 
                     if (hasLiked) {
-                        sender.answerCallbackQuery(callbackQueryId, "Вы поставили лайк ❤️");
+                        sender.answerCallbackQuery(callbackQueryId, "Ви поставили лайк ❤️");
                     } else {
-                        sender.answerCallbackQuery(callbackQueryId, "Вы убрали лайк поста 😔");
+                        sender.answerCallbackQuery(callbackQueryId, "Ви прибрали лайк посту \uD83D\uDE14");
                     }
                 }).start();
             }
@@ -394,16 +395,16 @@ public class Main extends TelegramLongPollingBot {
         int likesToday = likes - yesterday.getLikes();
         int subscribersToday = subscribers - yesterday.getSubscribers();
 
-        DateFormat format = new SimpleDateFormat("_На состояние dd.MM.yyyy HH:mm_");
+        DateFormat format = new SimpleDateFormat("_На стан dd.MM.yyyy HH:mm_");
 
         format.setTimeZone(TimeZone.getTimeZone("Europe/Kiev"));
 
-        String msg = "\uD83D\uDCCA *Статистика канала*\n" +
+        String msg = "\uD83D\uDCCA *Статистика каналу*\n" +
                 "\n" +
-                "📃 Постов запостили: *" + posts + "* (" + (postsToday > 0 ? "+" : "") + postsToday + " за сегодня)\n" +
-                "❤️ Лайков всего: *" + likes + "* (" + (likesToday > 0 ? "+" : "") + likesToday + " за сегодня)\n" +
-                "\uD83D\uDC65 Подписчиков всего: *" + subscribers + "* (" + (subscribersToday > 0 ? "+" : "") + subscribersToday + " за сегодня)\n" +
-                "\uD83D\uDCC8 Лайков за пост в среднем: *" + likesPerPost + "*\n" +
+                "📃 Постів запостили: *" + posts + "* (" + (postsToday > 0 ? "+" : "") + postsToday + " за сьогодні)\n" +
+                "❤️ Лайків всього: *" + likes + "* (" + (likesToday > 0 ? "+" : "") + likesToday + " за сьогодні)\n" +
+                "\uD83D\uDC65 Підписників всього: *" + subscribers + "* (" + (subscribersToday > 0 ? "+" : "") + subscribersToday + " за сьогодні)\n" +
+                "\uD83D\uDCC8 Лайків за пост в середньому: *" + likesPerPost + "*\n" +
                 "\n" +
                 format.format(new Date());
 

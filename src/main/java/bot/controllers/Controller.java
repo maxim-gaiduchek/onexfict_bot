@@ -41,7 +41,7 @@ class Controller {
 
                 message = sender.execute(send).get(0);
                 if (AdminController.ADMIN_CHAT_ID.equals(chatId)) {
-                    message = sender.sendString(chatId, "Оценивайте, господа", message.getMessageId());
+                    message = sender.sendString(chatId, "Оцінюйте, панове", message.getMessageId());
                 }
             } else {
                 String fileIdString = fileIds.get(0);

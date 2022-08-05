@@ -98,6 +98,7 @@ public class JpaRepositoriesService implements DBService {
                 .mapToInt(Post::getLikesCount)
                 .sum();
     }
+
     @Override
     public int getLikesTop(BotUser user) {
         List<BotUser> top = usersRepository.findAll().stream()

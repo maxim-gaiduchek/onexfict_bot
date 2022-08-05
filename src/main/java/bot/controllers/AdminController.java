@@ -26,7 +26,7 @@ public class AdminController {
     }
 
     public static void sendToAdmin(Post post, User user, SimpleSender sender) {
-        String msg = "Мем от [" + Formatter.formatTelegramText(user.getFirstName()) + "](tg://user?id=" + user.getId() + ")";
+        String msg = "Мем від [" + Formatter.formatTelegramText(user.getFirstName()) + "](tg://user?id=" + user.getId() + ")";
 
         sender.sendString(ADMIN_CHAT_ID, msg);
         Integer messageId = Controller.send(post, sender, ADMIN_CHAT_ID);

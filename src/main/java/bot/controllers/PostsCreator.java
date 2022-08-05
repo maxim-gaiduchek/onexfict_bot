@@ -10,9 +10,9 @@ import java.util.List;
 
 public class PostsCreator {
 
-    public static final String STOP_ADDING_PHOTO_STRING = "❌ Остановить добавление";
-    public static final String STOP_CREATING_POST_STRING = "❌ Остановить создание поста";
-    public static final String SKIP_ADDING_TEXT_STRING = "❌ Пропустить этот шаг";
+    public static final String STOP_ADDING_PHOTO_STRING = "❌ Зупинити додавання";
+    public static final String STOP_CREATING_POST_STRING = "❌ Зупинити створення посту";
+    public static final String SKIP_ADDING_TEXT_STRING = "❌ Пропустити цей крок";
 
     private PostsCreator() {
     }
@@ -31,7 +31,7 @@ public class PostsCreator {
 
     public static void addPhoto(SimpleSender sender, Long chatId) {
         String msg = """
-                🖼 Скиньте продолжение мема или еще один мем""";
+                🖼 Скиньте продовження мема або ще один мем""";
 
         sender.sendStringAndKeyboard(chatId, msg, getAddPhotoKeyboard(), true);
     }
@@ -46,7 +46,7 @@ public class PostsCreator {
 
     public static void sendAddText(SimpleSender sender, Long chatId) {
         String msg = """
-                \uD83D\uDCC3 Введите текст к мему, который будет под фотками в посте""";
+                \uD83D\uDCC3 Введіть текст до мему, який буде під фотками у пості""";
 
         sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
@@ -67,7 +67,7 @@ public class PostsCreator {
 
     public static void sendAddBy(SimpleSender sender, Long chatId) {
         String msg = """
-                \uD83D\uDC65 Введите, от кого этот мем (под мемом будет отображено "by <имя>")""";
+                \uD83D\uDC65 Введіть, від кого цей мем (під мемом буде відображено "by <ім'я>")""";
 
         sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
@@ -90,14 +90,14 @@ public class PostsCreator {
 
     public static void sendAddSource(SimpleSender sender, Long chatId) {
         String msg = """
-                🌐 Введите источник к этому мему (если надо)""";
+                🌐 Введіть джерело до цього мему (якщо треба)""";
 
         sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
 
     public static void sendSourceError(SimpleSender sender, Long chatId) {
         String msg = """
-                🌐 Ссылка должна начинаться на "https://\"""";
+                🌐 Посилання має починатися на "https://\"""";
 
         sender.sendStringAndKeyboard(chatId, msg, getSkipStepKeyboard(), true);
     }
@@ -109,7 +109,7 @@ public class PostsCreator {
 
     public static void addSource(SimpleSender sender, BotUser user, String source) {
         String msg = """
-                👍 Спасибо за мемес. Его проверят админы и запостят на канал""";
+                👍 Дякую за мемес. Його перевірять адміни та запостіть на канал""";
 
         if (!source.equals(SKIP_ADDING_TEXT_STRING)) {
             user.getPost().setSource(source);
